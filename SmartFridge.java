@@ -6,14 +6,28 @@ import java.util.Scanner;
 //pounds
 //units (4 tomatoes)
 
+//requires
+//1. add item
+//2. remove item
+//3. display fridge
+//4. enter recipe
+   //4.1 make recipe
+//5. exit program
+
 public class SmartFridge{
 	public static void main(String[] args){
       //sets a default value
       int userOption = -1;
+      //default fridge size is 5 items
+      String[] items = new String[5];
+      double[] quantity = new double[5];
+      
+      //check if null values or "0" quantities are in the array
+      //should also sort the fridge
+      
+      System.out.println("Welcome to the SmartFridge.");
       
       while(userOption != 5){
-         System.out.println("Welcome to the SmartFridge.");
-         
          //prints the menu of options
          System.out.println("\nWhat do you want to do today?");
          
@@ -27,10 +41,10 @@ public class SmartFridge{
          //determines where to go depending on what the user entered
          switch(userOption){
             case 1:
-               addItem();
+               addItem(items, quantity);
                break;
             case 2:
-               removeItem();
+               removeItem(items, quantity);
                break;
             case 3:
                break;
@@ -45,14 +59,6 @@ public class SmartFridge{
       System.exit(0);
       
 	}//end main
-   
-   //requires
-   //1. add item
-   //2. remove item
-   //3. display fridge
-   //4. enter recipe
-      //4.1 make recipe
-   //5. exit program
    
 	
 	public static void printMenu(){		
@@ -95,17 +101,43 @@ public class SmartFridge{
    }//end getInput
 	
    
-   public static void addItem(){
+   public static void addItem(String[] items, double[] quantity){
+      //these variables is for the new item being put in
       String newItem;
-      double quantity;
+      double newQuantity;
+      Scanner sc = new Scanner(System.in);
       
       System.out.println("What would you like to put in?");
+      newItem = sc.nextLine();
+      
+      System.out.println("Which unit will be be storing this in?");
+      
+      
+      System.out.println("And how much of it will we be storing?");
+      
+      
+      //must also convert units
       
       return;
    }
    
    
-   public static void removeItem(){
+   public static void getValidUnits(){
+      //checks if the user entered mL, L, g, mg, lb, no units, ignoring uppercase
+      
+   }
+   
+   
+   public static double convertUnits(double quantity){
+      double converted = -1;
+      
+      //converts units here
+      
+      return converted;
+   }
+   
+   
+   public static void removeItem(String[] items, double[] quantity){
       System.out.println("What would you like to remove?");
       return;
    }
