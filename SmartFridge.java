@@ -22,11 +22,15 @@ public class SmartFridge{
       String[] items = new String[5];
       double[] quantity = new double[5];
       
+      items[1] = "Pizza";
+      quantity[1] = 2;
+      
       //check if null values or "0" quantities are in the array
       //should also sort the fridge
       
       System.out.println("Welcome to the SmartFridge.");
       
+      //repeats until the user chooses to exit (when they enter 5)
       while(userOption != 5){
          //prints the menu of options
          System.out.println("\nWhat do you want to do today?");
@@ -47,6 +51,7 @@ public class SmartFridge{
                removeItem(items, quantity);
                break;
             case 3:
+               printFridge(items, quantity);
                break;
             case 4:
                break;
@@ -118,7 +123,6 @@ public class SmartFridge{
       
       //must also convert units
       
-      return;
    }
    
    
@@ -139,7 +143,18 @@ public class SmartFridge{
    
    public static void removeItem(String[] items, double[] quantity){
       System.out.println("What would you like to remove?");
-      return;
    }
+   
+   
+   public static void printFridge(String[] items, double[] quantity){
+      for(int i = 0; i < items.length; i++){
+         //this if check doesn't work yet
+         //suppose to print the item if the item isn't null
+         if(!"null".equals(items[i])){
+            System.out.println(i + items[i] + " | " + quantity[i]);
+         }
+      }//end for loop
+      
+   }//end printFridge
    
 }//end class
