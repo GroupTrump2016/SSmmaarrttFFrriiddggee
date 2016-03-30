@@ -17,6 +17,7 @@ public class SmartFridge{
    //3. display fridge
    //4. enter recipe
       //4.1 make recipe
+   //5. exit program
    
 	
 	public static void printMenu(){
@@ -24,24 +25,42 @@ public class SmartFridge{
 		int userOption= -1;
 		Scanner sc = new Scanner(System.in);
 		
+      //prints the menu of options
 		System.out.println("\nWhat do you want to do today?");
-		//prints the menu of options
 		
-		
-		//checks if the input is a valid integer
-		while(sc.hasNextInt() == false){
-			sc.next();
-			System.out.println("Please enter a valid number:");
-		}
-		
-		userOption = sc.nextInt();
-		
-		//debug output check
-		System.out.println("userOption is " + userOption);
+      //gets valid input
+      //sends in 5 for 5 options
+      getInput(5);
 		
 	}//end printMenu
 	
-	
+	public static int getInput(int options){
+      Scanner sc = new Scanner(System.in);
+      int input = -1;
+      boolean validInput = false;
+      
+      System.out.println("Select a menu from 1 to " + options + ":");
+      
+      while(validInput == false){
+         //checks if the scanner holds an int
+         while(sc.hasNextInt() == false){
+            sc.next();
+            System.out.println("Please enter a valid menu (1-" + option + ")");
+         }
+         
+         input = sc.nextInt();
+         
+         //checks if the value inputted meets range
+         if(input >= 0 && input <=6){
+            validInput = true;
+            return input;
+         }
+         
+         System.out.println("Please enter a valid column number (0-6).");
+      }//end validInput while
+      
+      return -1;
+   }
 	
 	
 }//end class
