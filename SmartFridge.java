@@ -13,11 +13,13 @@ import java.util.Scanner;
 //4. enter recipe
    //4.1 make recipe
 //5. exit program
+//6. enter file
 
 //will add items in positions where it is null
 //then the fridge will need to eliminate null elements to reduce crap in there
 //so when addItem is called you need to copy the old array to a new one +1 size
    //when the new array is created then the null elements can get removed
+//when a file is imported then the array needs to be increased by the amount of items in the file
 
 public class SmartFridge{
 	public static void main(String[] args){
@@ -117,6 +119,14 @@ public class SmartFridge{
       
       return quantity;
    }//end getValidQuantity
+   
+   //finds the first position where the element is null so that a new item can be put in there
+   //WIP
+   public static int getNullPosition(){
+      int position = -1;
+      
+      return position;
+   }//end getNullPosition
    
    //WIP
    public static void addItem(String[] items, double[] quantity){
