@@ -14,6 +14,10 @@ import java.util.Scanner;
    //4.1 make recipe
 //5. exit program
 
+//will add items in positions where it is null
+//then the fridge will need to eliminate null elements to reduce crap in there
+//so when addItem is called you need to copy the old array to a new one +1 size
+
 public class SmartFridge{
 	public static void main(String[] args){
       //sets a default value
@@ -37,7 +41,7 @@ public class SmartFridge{
          
          //gets valid input
          //sends in 5 for 5 options
-         userOption = getInput(5);
+         userOption = getMenuInput(5);
          
          //determines where to go depending on what the user entered
          switch(userOption){
@@ -51,6 +55,7 @@ public class SmartFridge{
                printFridge(items, quantity);
                break;
             case 4:
+               //enter recipe option
                break;
          }//end switchcase
          
@@ -74,7 +79,7 @@ public class SmartFridge{
 	
    
    //options is the number of options the menu should have
-	public static int getInput(int options){
+	public static int getMenuInput(int options){
       Scanner sc = new Scanner(System.in);
       int input = -1;
       boolean validInput = false;
@@ -105,9 +110,14 @@ public class SmartFridge{
    }//end getInput
 	
    
+   
+   public static double getValidQuantity(){
+      //checks if the user entered a double and not a string or something
+   }
+   
    public static void addItem(String[] items, double[] quantity){
       //these variables is for the new item being put in
-      String newItem;
+      String newItem, userUnit;
       double newQuantity;
       Scanner sc = new Scanner(System.in);
       
@@ -115,27 +125,30 @@ public class SmartFridge{
       newItem = sc.nextLine();
       
       System.out.println("Which unit will be be storing this in?");
-      
+      userUnit = getValidUnit();
       
       System.out.println("And how much of it will we be storing?");
+      newQuantity = sc.nextDouble();
       
       
-      //must also convert units
+      System.out.println("You just stored " + newQuantity + userUnit + " of " + newItem);
       
-   }
+   }//end addItem
    
    
-   public static void getValidUnits(){
+   public static String getValidUnit(){
       //checks if the user entered mL, L, g, mg, lb, no units, ignoring uppercase
       boolean valid = false;
-      String userUnit;
+      String userUnit = "";
       Scanner sc = new Scanner(System.in);
       
-      while(!valid){
-         System.out.println("Valid units = mL, L, g, mg, lb, quantity:");
-         userUnit = sc.nextLine();
-         
-      }
+      System.out.println("Valid units = mL, L, g, mg, lb, quantity:");
+      userUnit = sc.nextLine();
+      
+      //need a check to see if the user is entering valid units
+      
+      return userUnit;
+      
    }//end getValidUnits
    
    
@@ -143,6 +156,10 @@ public class SmartFridge{
       double converted = -1;
       
       //converts units here
+      
+      if(userUnit == "mL"){
+         converted = quantity / 1000;
+      }
       
       return converted;
    }
