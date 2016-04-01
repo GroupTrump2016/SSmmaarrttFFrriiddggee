@@ -151,8 +151,8 @@ public class SmartFridge{
    public static void addItem(String[] items, double[] quantity, String[] units){
       //these variables is for the new item being put in
       String newItem, userUnit;
-      double newQuantity;
-      int emptyPos;
+      double newQuantity, convertedQuantity = 0;
+      int itemPos;
       Scanner sc = new Scanner(System.in);
       
       System.out.println("What would you like to put in?");
@@ -166,21 +166,25 @@ public class SmartFridge{
       
       //check if the current item is in the fridge already
       //if not add it to an empty position
-      emptyPos = isItemPresent(items, newItem);
+      itemPos = isItemPresent(items, newItem);
       
-      if(emptyPos == -1){
+      if(itemPos == -1){
          items[getNullPosition(quantity)] = newItem;
          units[getNullPosition(quantity)] = userUnit;
          quantity[getNullPosition(quantity)] = newQuantity;
+         
+         System.out.println("\nYou just stored " + newQuantity + " " + userUnit + " of " + newItem);
       }
       
       else{
          //convert units here
+         convertedQuantity = convertUnits(newQuantity, userUnit, itemPos, units);
          
-         quantity[emptyPos] += newQuantity;
+         //new, converted quantity is set to the empty position
+         quantity[itemPos] += convertedQuantity;
+         
+         System.out.println("\nYou just stored " + newQuantity + " " + userUnit + " of " + newItem);
       }
-      
-      System.out.println("\nYou just stored " + newQuantity + " " + userUnit + " of " + newItem);
       
    }//end addItem
    
@@ -201,19 +205,26 @@ public class SmartFridge{
    }//end getValidUnits
    
    //WIP
-   public static double convertUnits(double quantity, String userUnit){
+   public static double convertUnits(double quantity, String userUnit, int itemPos, String[] units){
       double converted = -1;
+      String fridgeUnit;
       
-      //converts units here to our set units
+      //find the unit being used at emptyPos
+      fridgeUnit = units[itemPos];
+      //debug
+      System.out.println("Unit being used is " + fridgeUnit);
       
-      //default units:
-      //litres
-      //kilograms
-      //pounds
-      //units (4 tomatoes)
+      //checks if the userUnit is the same as fridgeUnit
+      if(userUnit.equalsIgnoreCase(fridgeUnit)){
+         converted = quantity;
+      }
       
-      if(userUnit.equalsIgnoreCase("mL")){
+      //converts the unit the user is entering to the unit that's in the fridge
+      if(userUnit.equalsIgnoreCase("mL") && fridgeUnit.equalsIgnoreCase("L")){
          converted = quantity / 1000;
+      }
+      else if(userUnit.equalsIgnoreCase("L") && fridgeUnit.equalsIgnoreCase("mL")){
+         converted = quantity * 1000;
       }
       
       return converted;
