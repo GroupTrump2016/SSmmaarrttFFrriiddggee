@@ -1,11 +1,5 @@
 import java.util.Scanner;
 
-//default units:
-//litres
-//kilograms
-//pounds
-//units (4 tomatoes)
-
 //requires
 //1. add item
 //2. remove item
@@ -153,6 +147,7 @@ public class SmartFridge{
       String newItem, userUnit;
       double newQuantity, convertedQuantity = 0;
       int itemPos;
+      boolean validUnit;
       Scanner sc = new Scanner(System.in);
       
       System.out.println("What would you like to put in?");
@@ -177,6 +172,12 @@ public class SmartFridge{
       }
       
       else{
+         while(!doUnitsMatch(userUnit, units, itemPos)){
+            System.out.println("There was a problem with the unit you selected.");
+            System.out.println("Please make sure that you're storing the item in the same category of units as the fridge (eg. mg <-> g or mL <-> L)");
+            userUnit = getValidUnit();
+         }
+         
          //convert units here
          convertedQuantity = convertUnits(newQuantity, userUnit, itemPos, units);
          
@@ -188,6 +189,7 @@ public class SmartFridge{
       
    }//end addItem
    
+   
    //WIP
    public static String getValidUnit(){
       //checks if the user entered mL, L, g, mg, lb, no units, ignoring uppercase
@@ -195,7 +197,7 @@ public class SmartFridge{
       String userUnit = "";
       Scanner sc = new Scanner(System.in);
       
-      System.out.println("Valid units = mL, L, g, mg, lb, quantity:");
+      System.out.println("Valid units = mL, L, g, mg, lb, or leave blank for quantity (eg. 3 Potatoes):");
       userUnit = sc.nextLine();
       
       //need a check to see if the user is entering valid units
@@ -204,6 +206,42 @@ public class SmartFridge{
       
    }//end getValidUnits
    
+   
+   //checks if the user is entering metric <-> metric or imperial <-> imperial
+   //NOT metric <-> imperial
+   public static boolean doUnitsMatch(String userUnit, String[] units, int itemPos){
+      String fridgeUnit = units[itemPos];
+      
+      //checks mL <-> L
+      if(userUnit.equalsIgnoreCase("mL") && fridgeUnit.equalsIgnoreCase("L")){
+         return true;
+      }
+      else if(userUnit.equalsIgnoreCase("L") && fridgeUnit.equalsIgnoreCase("mL")){
+         return true;
+      }
+      
+      //checks mg <-> g
+      if(userUnit.equalsIgnoreCase("mg") && fridgeUnit.equalsIgnoreCase("g")){
+         return true;
+      }
+      else if(userUnit.equalsIgnoreCase("g") && fridgeUnit.equalsIgnoreCase("mg")){
+         return true;
+      }
+      
+      //checks lb
+      if(userUnit.equalsIgnoreCase("lb") && fridgeUnit.equalsIgnoreCase("lb")){
+         return true;
+      }
+      
+      //checks quantity
+      if(userUnit.equalsIgnoreCase("") && fridgeUnit.equalsIgnoreCase("")){
+         return true;
+      }
+      
+      return false;
+   }
+   
+      
    //WIP
    public static double convertUnits(double quantity, String userUnit, int itemPos, String[] units){
       double converted = -1;
@@ -211,20 +249,36 @@ public class SmartFridge{
       
       //find the unit being used at emptyPos
       fridgeUnit = units[itemPos];
-      //debug
-      System.out.println("Unit being used is " + fridgeUnit);
       
       //checks if the userUnit is the same as fridgeUnit
       if(userUnit.equalsIgnoreCase(fridgeUnit)){
          converted = quantity;
       }
       
-      //converts the unit the user is entering to the unit that's in the fridge
+      //converts mL <-> L
       if(userUnit.equalsIgnoreCase("mL") && fridgeUnit.equalsIgnoreCase("L")){
          converted = quantity / 1000;
       }
       else if(userUnit.equalsIgnoreCase("L") && fridgeUnit.equalsIgnoreCase("mL")){
          converted = quantity * 1000;
+      }
+      
+      //converts mg <-> g 
+      if(userUnit.equalsIgnoreCase("mg") && fridgeUnit.equalsIgnoreCase("g")){
+         converted = quantity / 1000;
+      }
+      else if(userUnit.equalsIgnoreCase("g") && fridgeUnit.equalsIgnoreCase("mg")){
+         converted = quantity * 1000;
+      }
+      
+      //returns the lb
+      if(userUnit.equalsIgnoreCase("lb") && fridgeUnit.equalsIgnoreCase("lb")){
+         converted = quantity;
+      }
+      
+      //returns the quantity
+      if(userUnit.equalsIgnoreCase("") && fridgeUnit.equalsIgnoreCase("")){
+         converted = quantity;
       }
       
       return converted;
