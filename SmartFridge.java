@@ -16,18 +16,22 @@ import java.util.Scanner;
 //6. enter file
 
 //will add items in positions where it is null
-//then the fridge will need to eliminate null elements to reduce crap in there
+//then the fridge will need to eliminate 0 quantity elements to reduce crap in there
 //so when addItem is called you need to copy the old array to a new one +1 size
    //when the new array is created then the null elements can get removed
 //when a file is imported then the array needs to be increased by the amount of items in the file
+
+//max fridge size is 40 items
 
 public class SmartFridge{
 	public static void main(String[] args){
       //sets a default value
       int userOption = -1;
+      //sets the value for the user to exit the program with
       final int PROGRAM_END = 5;
       //default fridge size is 5 items
       String[] items = new String[5];
+      String[] units = new String[5];
       double[] quantity = new double[5];
       
       System.out.println("Welcome to the SmartFridge.");
@@ -35,7 +39,8 @@ public class SmartFridge{
       //repeats until the user chooses to exit (when they enter 5)
       while(userOption != PROGRAM_END){
          //prints the menu of options
-         System.out.println("\nWhat do you want to do today?");
+         System.out.println("\n=========================================");
+         System.out.println("What do you want to do today?");
          
          //prints main menu
          printMenu();
@@ -47,13 +52,13 @@ public class SmartFridge{
          //determines where to go depending on what the user entered
          switch(userOption){
             case 1:
-               addItem(items, quantity);
+               addItem(items, quantity, units);
                break;
             case 2:
-               removeItem(items, quantity);
+               removeItem(items, quantity, units);
                break;
             case 3:
-               printFridge(items, quantity);
+               printFridge(items, quantity, units);
                break;
             case 4:
                //enter recipe option
@@ -88,9 +93,9 @@ public class SmartFridge{
       
       System.out.println("Select a menu item from 1 to " + options + ":");
       
-      while(validInput == false){
+      while(!validInput){
          //checks if the scanner holds an int
-         while(sc.hasNextInt() == false){
+         while(!sc.hasNextInt()){
             sc.next();
             System.out.println("Please enter a valid menu item (1-" + options + ")");
          }
@@ -111,28 +116,43 @@ public class SmartFridge{
    }//end getInput
 	
    
-   
-   //WIP
+   //gets a double from the user + checks that it is a double and not a string or something
    public static double getValidQuantity(){
+      Scanner sc = new Scanner(System.in);
       double quantity = -1;
-      //checks if the user entered a double and not a string or something
+      
+      while(!sc.hasNextDouble()){
+         sc.next();
+         System.out.println("Please enter a valid quantity:");
+      }
+      
+      quantity = sc.nextDouble();
       
       return quantity;
    }//end getValidQuantity
    
-   //finds the first position where the element is null so that a new item can be put in there
+   
+   //finds the first position where the quanitity is 0 so that a new item can be put in there
    //WIP
-   public static int getNullPosition(){
-      int position = -1;
+   public static int getNullPosition(double[] quantity){
+      //checks entire fridge for elements with no quantity
+      for(int i = 0; i < quantity.length; i++){
+         //checks if the item has no quantity
+         if(quantity[i] == 0){
+            return i;
+         }
+      }//end for loop
       
-      return position;
+      //means fridge is full
+      return -1;
    }//end getNullPosition
    
    //WIP
-   public static void addItem(String[] items, double[] quantity){
+   public static void addItem(String[] items, double[] quantity, String[] units){
       //these variables is for the new item being put in
       String newItem, userUnit;
       double newQuantity;
+      int emptyPos;
       Scanner sc = new Scanner(System.in);
       
       System.out.println("What would you like to put in?");
@@ -144,8 +164,23 @@ public class SmartFridge{
       System.out.println("And how much of it will we be storing?");
       newQuantity = getValidQuantity();
       
+      //check if the current item is in the fridge already
+      //if not add it to an empty position
+      emptyPos = isItemPresent(items, newItem);
       
-      System.out.println("You just stored " + newQuantity + userUnit + " of " + newItem);
+      if(emptyPos == -1){
+         items[getNullPosition(quantity)] = newItem;
+         units[getNullPosition(quantity)] = userUnit;
+         quantity[getNullPosition(quantity)] = newQuantity;
+      }
+      
+      else{
+         //convert units here
+         
+         quantity[emptyPos] += newQuantity;
+      }
+      
+      System.out.println("\nYou just stored " + newQuantity + " " + userUnit + " of " + newItem);
       
    }//end addItem
    
@@ -177,25 +212,42 @@ public class SmartFridge{
       //pounds
       //units (4 tomatoes)
       
-      if(userUnit == "mL"){
+      if(userUnit.equalsIgnoreCase("mL")){
          converted = quantity / 1000;
       }
       
       return converted;
-   }
+   }//end convertUnits
+   
    
    //WIP
-   public static void removeItem(String[] items, double[] quantity){
+   public static void removeItem(String[] items, double[] quantity, String[] units){
       System.out.println("What would you like to remove?");
    }
    
+   
+   //checks if the item is already in the fridge
+   //if it does, it returns the position
+   //if it doesn't, it returns -1
+   public static int isItemPresent(String[] items, String newItem){
+      for(int i = 0; i < items.length; i++){
+         if(newItem.equalsIgnoreCase(items[i])){
+            return i;
+         }
+      }
+      
+      return -1;
+   }//end isItemPresent
+   
+   
    //WIP - as in make it prettier
-   public static void printFridge(String[] items, double[] quantity){
+   public static void printFridge(String[] items, double[] quantity, String[] units){
+      System.out.println("Fridge contents:\n");
       for(int i = 0; i < items.length; i++){
          //checks if the item is null or actually has something
-         if(items[i] != null){
+         if(quantity[i] != 0){
             //make this prettier later
-            System.out.println(items[i] + " | " + quantity[i]);
+            System.out.println(items[i] + " " + quantity[i] + " " + units[i]);
          }
       }//end for loop
    }//end printFridge
