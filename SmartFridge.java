@@ -7,9 +7,9 @@ import java.util.Arrays;
 //3. display fridge
 //4. enter recipe
    //4.1 make recipe
-//5. exit program
+//5. remove all items
 //6. enter file
-//7. remove ALL items
+//7. ezit program
 
 //the fridge will need to eliminate 0 quantity elements to reduce crap in there
 //when a file is imported then the array needs to be increased by the amount of items in the file
@@ -21,7 +21,7 @@ public class SmartFridge{
       //sets a default value
       int userOption = -1;
       //sets the value for the user to exit the program with; sets the max fridge size; sets the default fridge size
-      final int PROGRAM_END = 5, MAX_SIZE = 40, DEFAULT_SIZE = 5;
+      final int PROGRAM_END = 7, MAX_SIZE = 40, DEFAULT_SIZE = 5;
       //default fridge size is 5 items
       String[] items = new String[DEFAULT_SIZE];
       String[] units = new String[DEFAULT_SIZE];
@@ -34,11 +34,6 @@ public class SmartFridge{
       
       //repeats until the user chooses to exit (when they enter 5)
       while(userOption != PROGRAM_END){
-         
-         //should clear out 0 quantity items here
-         
-         
-         
          //prints the menu of options
          System.out.println("\n=========================================");
          System.out.println("What do you want to do today?");
@@ -47,8 +42,8 @@ public class SmartFridge{
          printMenu();
          
          //gets valid input
-         //sends in 5 for 5 options
-         userOption = getMenuInput(5);
+         //sends in 7 for 7 options
+         userOption = getMenuInput(7);
          
          //determines where to go depending on what the user entered
          switch(userOption){
@@ -59,11 +54,15 @@ public class SmartFridge{
                }
                else{
                   //expands the arrays to make room for another item
-                  items = ExpandArray.expand(items);
-                  quantity = ExpandArray.expand(quantity);
-                  units = ExpandArray.expand(units);
+                  if(getNullPosition(quantity) == -1){
+                     items = ExpandArray.expand(items);
+                     quantity = ExpandArray.expand(quantity);
+                     units = ExpandArray.expand(units);
+                  }
                   
                   addItem(items, quantity, units);
+                  
+                  Sort.selectionSort(items, quantity, units);
                   break;
                }
             case 2:
@@ -73,6 +72,12 @@ public class SmartFridge{
                }
                else{
                   removeItem(items, quantity, units);
+                  
+                  items = ShrinkArray.shrink(quantity, items);
+                  units = ShrinkArray.shrink(quantity, units);
+                  quantity = ShrinkArray.shrink(quantity);
+                  
+                  Sort.selectionSort(items, quantity, units);
                   break;
                }
             case 3:
@@ -86,6 +91,12 @@ public class SmartFridge{
                }
             case 4:
                //enter recipe option
+               break;
+            case 5:
+               //remove all items
+               break;
+            case 6:
+               //enter file
                break;
          }//end switchcase
          
@@ -104,7 +115,9 @@ public class SmartFridge{
       System.out.println("2. Remove item from fridge");
       System.out.println("3. Display all contents of the fridge");
       System.out.println("4. Enter a recipe");
-      System.out.println("5. Exit the fridge");
+      System.out.println("5. Remove ALL items");
+      System.out.println("6. Enter file");
+      System.out.println("7. Exit the fridge");
 	}//end printMenu
 	
    
@@ -166,13 +179,12 @@ public class SmartFridge{
          }
       }
       
-      //should not be able to get here; will crash the program
       return -1;
    }//end getNullPosition
    
    
    public static void addItem(String[] items, double[] quantity, String[] units){
-      //these variables is for the new item being put in
+      //these variables are for the new item being put in
       String newItem, userUnit;
       double newQuantity, convertedQuantity = 0;
       int itemPos;
@@ -217,8 +229,6 @@ public class SmartFridge{
          
          System.out.println("\nYou just stored " + newQuantity + " " + userUnit + " of " + newItem);
       }
-      
-      Sort.selectionSort(items, quantity, units);
       
    }//end addItem
    
@@ -367,7 +377,6 @@ public class SmartFridge{
       
       System.out.println("\nYou just removed " + removeQuantity + " " + userUnit + " of " + removeItem);
       
-      Sort.selectionSort(items, quantity, units);
    }//end removeItem
    
    
@@ -401,9 +410,14 @@ public class SmartFridge{
       System.out.println("Fridge contents:\n");
       for(int i = 0; i < items.length; i++){
          //will only print if the item has a quantity
-         if(quantity[i] != 0){
-            System.out.println(items[i] + " " + quantity[i] + " " + units[i]);
-         }
+         
+         //debug
+         System.out.println(items[i] + " " + quantity[i] + " " + units[i]);
+         
+         //~ if(quantity[i] != 0){
+            //~ System.out.println(items[i] + " " + quantity[i] + " " + units[i]);
+         //~ }
+         
       }//end for loop
    }//end printFridge
    
