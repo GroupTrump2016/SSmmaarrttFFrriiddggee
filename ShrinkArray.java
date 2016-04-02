@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 //finds the length the new array should be
 //then copies the old elements into the new one
 public class ShrinkArray{

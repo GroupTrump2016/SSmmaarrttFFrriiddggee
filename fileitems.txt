@@ -1,0 +1,5 @@
+tomatoes, 2
+orange juice, 1.4 L
+cheddar cheese, 85 g
+eggs, 9
+salsa, 400 mL

@@ -217,7 +217,12 @@ public class SmartFridge{
          units[getNullPosition(quantity)] = userUnit;
          quantity[getNullPosition(quantity)] = newQuantity;
          
-         System.out.println("\nYou just stored " + newQuantity + " " + userUnit + " of " + newItem);
+         if(userUnit.equalsIgnoreCase("")){
+            System.out.println("\nYou just stored " + newQuantity + " " + newItem);
+         }
+         else{
+            System.out.println("\nYou just stored " + newQuantity + " " + userUnit + " of " + newItem);
+         }
       }
       
       else{
@@ -227,7 +232,12 @@ public class SmartFridge{
          //new, converted quantity is set to the empty position
          quantity[itemPos] += convertedQuantity;
          
-         System.out.println("\nYou just stored " + newQuantity + " " + userUnit + " of " + newItem);
+         if(userUnit.equalsIgnoreCase("")){
+            System.out.println("\nYou just stored " + newQuantity + " " + newItem);
+         }
+         else{
+            System.out.println("\nYou just stored " + newQuantity + " " + userUnit + " of " + newItem);
+         }
       }
       
    }//end addItem
@@ -332,7 +342,6 @@ public class SmartFridge{
    }//end convertUnits
    
    
-   //WIP
    public static void removeItem(String[] items, double[] quantity, String[] units){
       //these variables is for the new item being put in
       String removeItem, userUnit;
@@ -375,7 +384,12 @@ public class SmartFridge{
       //new, converted quantity is set to the empty position
       quantity[itemPos] -= convertedQuantity;
       
-      System.out.println("\nYou just removed " + removeQuantity + " " + userUnit + " of " + removeItem);
+      if(userUnit.equalsIgnoreCase("")){
+            System.out.println("\nYou just removed " + removeQuantity + " " + removeItem);
+         }
+      else{
+         System.out.println("\nYou just removed " + removeQuantity + " " + userUnit + " of " + removeItem);
+      }
       
    }//end removeItem
    
@@ -411,12 +425,9 @@ public class SmartFridge{
       for(int i = 0; i < items.length; i++){
          //will only print if the item has a quantity
          
-         //debug
-         System.out.println(items[i] + " " + quantity[i] + " " + units[i]);
-         
-         //~ if(quantity[i] != 0){
-            //~ System.out.println(items[i] + " " + quantity[i] + " " + units[i]);
-         //~ }
+         if(quantity[i] != 0){
+            System.out.println(items[i] + " " + quantity[i] + " " + units[i]);
+         }
          
       }//end for loop
    }//end printFridge
