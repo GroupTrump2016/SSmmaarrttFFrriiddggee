@@ -11,10 +11,10 @@ import java.util.Arrays;
 //6. enter file
 //7. remove ALL items
 
-//will add items in positions where it is null
+//will add items in positions where the quantity is 0
 //then the fridge will need to eliminate 0 quantity elements to reduce crap in there
 //so when addItem is called you need to copy the old array to a new one +1 size
-   //when the new array is created then the null elements can get removed
+   //when the new array is created then the 0 quantity elements can get removed
 //when a file is imported then the array needs to be increased by the amount of items in the file
 
 //max fridge size is 40 items
