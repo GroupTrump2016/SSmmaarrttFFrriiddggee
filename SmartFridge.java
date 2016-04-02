@@ -11,10 +11,7 @@ import java.util.Arrays;
 //6. enter file
 //7. remove ALL items
 
-//will add items in positions where the quantity is 0
-//then the fridge will need to eliminate 0 quantity elements to reduce crap in there
-//so when addItem is called you need to copy the old array to a new one +1 size
-   //when the new array is created then the 0 quantity elements can get removed
+//the fridge will need to eliminate 0 quantity elements to reduce crap in there
 //when a file is imported then the array needs to be increased by the amount of items in the file
 
 //max fridge size is 40 items
@@ -37,6 +34,11 @@ public class SmartFridge{
       
       //repeats until the user chooses to exit (when they enter 5)
       while(userOption != PROGRAM_END){
+         
+         //should clear out 0 quantity items here
+         
+         
+         
          //prints the menu of options
          System.out.println("\n=========================================");
          System.out.println("What do you want to do today?");
@@ -56,6 +58,11 @@ public class SmartFridge{
                   break;
                }
                else{
+                  //expands the arrays to make room for another item
+                  items = ExpandArray.expand(items);
+                  quantity = ExpandArray.expand(quantity);
+                  units = ExpandArray.expand(units);
+                  
                   addItem(items, quantity, units);
                   break;
                }
