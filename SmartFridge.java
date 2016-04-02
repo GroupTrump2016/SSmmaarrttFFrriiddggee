@@ -135,7 +135,7 @@ public class SmartFridge{
          if(quantity[i] == 0){
             return i;
          }
-      }//end for loop
+      }
       
       //means fridge is full
       return -1;
@@ -147,7 +147,6 @@ public class SmartFridge{
       String newItem, userUnit;
       double newQuantity, convertedQuantity = 0;
       int itemPos;
-      boolean validUnit;
       Scanner sc = new Scanner(System.in);
       
       System.out.println("What would you like to put in?");
@@ -156,12 +155,21 @@ public class SmartFridge{
       System.out.println("What unit are you storing this in?");
       userUnit = getValidUnit();
       
-      System.out.println("And how much of it will we be storing?");
-      newQuantity = getValidQuantity();
-      
       //check if the current item is in the fridge already
       //if not add it to an empty position
-      itemPos = isItemPresent(items, newItem);
+      itemPos = getItemPos(items, newItem);
+      
+      //checks the unit matches the category of units in the fridge
+      if(itemPos != -1){
+         while(!doUnitsMatch(userUnit, units, itemPos)){
+            System.out.println("There was a problem with the unit you selected. The item in the fridge is using " + units[itemPos] + ".");
+            System.out.println("Please make sure that you're storing the item in the same category of units as the fridge (eg. mg <-> g or mL <-> L)");
+            userUnit = getValidUnit();
+         }
+      }
+      
+      System.out.println("And how much of it will we be storing?");
+      newQuantity = getValidQuantity();
       
       if(itemPos == -1){
          items[getNullPosition(quantity)] = newItem;
@@ -172,12 +180,6 @@ public class SmartFridge{
       }
       
       else{
-         while(!doUnitsMatch(userUnit, units, itemPos)){
-            System.out.println("There was a problem with the unit you selected.");
-            System.out.println("Please make sure that you're storing the item in the same category of units as the fridge (eg. mg <-> g or mL <-> L)");
-            userUnit = getValidUnit();
-         }
-         
          //convert units here
          convertedQuantity = convertUnits(newQuantity, userUnit, itemPos, units);
          
@@ -207,8 +209,8 @@ public class SmartFridge{
    }//end getValidUnits
    
    
-   //checks if the user is entering metric <-> metric or imperial <-> imperial
-   //NOT metric <-> imperial
+   //checks if the user is entering mg <-> g, mL <-> L, lb <-> lb, quantity <-> quantity
+   //NOT mg <-> L, etc.
    public static boolean doUnitsMatch(String userUnit, String[] units, int itemPos){
       String fridgeUnit = units[itemPos];
       
@@ -242,7 +244,6 @@ public class SmartFridge{
    }
    
       
-   //WIP
    public static double convertUnits(double quantity, String userUnit, int itemPos, String[] units){
       double converted = -1;
       String fridgeUnit;
@@ -294,7 +295,7 @@ public class SmartFridge{
    //checks if the item is already in the fridge
    //if it does, it returns the position
    //if it doesn't, it returns -1
-   public static int isItemPresent(String[] items, String newItem){
+   public static int getItemPos(String[] items, String newItem){
       for(int i = 0; i < items.length; i++){
          if(newItem.equalsIgnoreCase(items[i])){
             return i;
