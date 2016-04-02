@@ -52,7 +52,7 @@ public class SmartFridge{
          switch(userOption){
             case 1:
                if(items.length > MAX_SIZE){
-                  System.out.println("Your fridge is full!\nYou can't add anymore items until you take some out.");
+                  System.out.println("\nYour fridge is full!\nYou can't add anymore items until you take some out.");
                   break;
                }
                else{
@@ -60,11 +60,23 @@ public class SmartFridge{
                   break;
                }
             case 2:
-               removeItem(items, quantity, units);
-               break;
+               if(checkEmpty(quantity)){
+                  System.out.println("\nYour fridge is empty!\nYou need stuff in there before you can take them out.");
+                  break;
+               }
+               else{
+                  removeItem(items, quantity, units);
+                  break;
+               }
             case 3:
-               printFridge(items, quantity, units);
-               break;
+               if(checkEmpty(quantity)){
+                  System.out.println("\nYour fridge is empty!");
+                  break;
+               }
+               else{
+                  printFridge(items, quantity, units);
+                  break;
+               }
             case 4:
                //enter recipe option
                break;
@@ -365,6 +377,17 @@ public class SmartFridge{
       return -1;
    }//end isItemPresent
    
+   //checks if anything in quantity is greater than 0
+   //returns true if it is empty, returns false if it isn't
+   public static boolean checkEmpty(double[] quantity){
+      for(int i = 0; i < quantity.length; i++){
+         if(quantity[i] > 0){
+            return false;
+         }
+      }
+      
+      return true;
+   }
    
    //WIP - make prettier
    public static void printFridge(String[] items, double[] quantity, String[] units){
