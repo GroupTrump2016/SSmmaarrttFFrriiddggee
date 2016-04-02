@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.Arrays;
 
 //requires
 //1. add item
@@ -27,6 +28,9 @@ public class SmartFridge{
       String[] items = new String[5];
       String[] units = new String[5];
       double[] quantity = new double[5];
+      
+      Arrays.fill(items, "");
+      Arrays.fill(units, "");
       
       System.out.println("Welcome to the SmartFridge.");
       
@@ -141,7 +145,7 @@ public class SmartFridge{
       return -1;
    }//end getNullPosition
    
-   //WIP
+   
    public static void addItem(String[] items, double[] quantity, String[] units){
       //these variables is for the new item being put in
       String newItem, userUnit;
@@ -188,6 +192,8 @@ public class SmartFridge{
          
          System.out.println("\nYou just stored " + newQuantity + " " + userUnit + " of " + newItem);
       }
+      
+      Sort.selectionSort(items, quantity, units);
       
    }//end addItem
    
@@ -306,7 +312,8 @@ public class SmartFridge{
    }//end isItemPresent
    
    
-   //WIP - as in make it prettier
+   //WIP
+   //MUST BE IN ALPHABETICAL ORDER
    public static void printFridge(String[] items, double[] quantity, String[] units){
       System.out.println("Fridge contents:\n");
       for(int i = 0; i < items.length; i++){
