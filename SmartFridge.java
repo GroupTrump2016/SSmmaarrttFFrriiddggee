@@ -9,6 +9,7 @@ import java.util.Arrays;
    //4.1 make recipe
 //5. exit program
 //6. enter file
+//7. remove ALL items
 
 //will add items in positions where it is null
 //then the fridge will need to eliminate 0 quantity elements to reduce crap in there
@@ -22,12 +23,12 @@ public class SmartFridge{
 	public static void main(String[] args){
       //sets a default value
       int userOption = -1;
-      //sets the value for the user to exit the program with
-      final int PROGRAM_END = 5;
+      //sets the value for the user to exit the program with; sets the max fridge size; sets the default fridge size
+      final int PROGRAM_END = 5, MAX_SIZE = 40, DEFAULT_SIZE = 5;
       //default fridge size is 5 items
-      String[] items = new String[5];
-      String[] units = new String[5];
-      double[] quantity = new double[5];
+      String[] items = new String[DEFAULT_SIZE];
+      String[] units = new String[DEFAULT_SIZE];
+      double[] quantity = new double[DEFAULT_SIZE];
       
       Arrays.fill(items, "");
       Arrays.fill(units, "");
@@ -50,8 +51,14 @@ public class SmartFridge{
          //determines where to go depending on what the user entered
          switch(userOption){
             case 1:
-               addItem(items, quantity, units);
-               break;
+               if(items.length > MAX_SIZE){
+                  System.out.println("Your fridge is full!\nYou can't add anymore items until you take some out.");
+                  break;
+               }
+               else{
+                  addItem(items, quantity, units);
+                  break;
+               }
             case 2:
                removeItem(items, quantity, units);
                break;
@@ -65,7 +72,7 @@ public class SmartFridge{
          
       }//end while check
       
-      //these only get run when the user enters 5
+      //these only get run when the user enters the PROGRAM_END value
       System.out.println("Thanks for using the SmartFridge!");
       System.exit(0);
       
@@ -131,7 +138,6 @@ public class SmartFridge{
    
    
    //finds the first position where the quanitity is 0 so that a new item can be put in there
-   //WIP
    public static int getNullPosition(double[] quantity){
       //checks entire fridge for elements with no quantity
       for(int i = 0; i < quantity.length; i++){
@@ -141,7 +147,7 @@ public class SmartFridge{
          }
       }
       
-      //means fridge is full
+      //should not be able to get here; will crash the program
       return -1;
    }//end getNullPosition
    
@@ -167,7 +173,7 @@ public class SmartFridge{
       if(itemPos != -1){
          while(!doUnitsMatch(userUnit, units, itemPos)){
             System.out.println("There was a problem with the unit you selected. The item in the fridge is using " + units[itemPos] + ".");
-            System.out.println("Please make sure that you're storing the item in the same category of units as the fridge (eg. mg <-> g or mL <-> L)");
+            System.out.println("\nPlease make sure that you're storing the item in the same category of units as the fridge (eg. mg <-> g or mL <-> L)");
             userUnit = getValidUnit();
          }
       }
@@ -219,6 +225,11 @@ public class SmartFridge{
    //NOT mg <-> L, etc.
    public static boolean doUnitsMatch(String userUnit, String[] units, int itemPos){
       String fridgeUnit = units[itemPos];
+      
+      //checks if the userUnit is the same as fridgeUnit
+      if(userUnit.equalsIgnoreCase(fridgeUnit)){
+         return true;
+      }
       
       //checks mL <-> L
       if(userUnit.equalsIgnoreCase("mL") && fridgeUnit.equalsIgnoreCase("L")){
@@ -294,8 +305,51 @@ public class SmartFridge{
    
    //WIP
    public static void removeItem(String[] items, double[] quantity, String[] units){
+      //these variables is for the new item being put in
+      String removeItem, userUnit;
+      double removeQuantity, convertedQuantity = 0;
+      int itemPos;
+      Scanner sc = new Scanner(System.in);
+      
       System.out.println("What would you like to remove?");
-   }
+      removeItem = sc.nextLine();
+      
+      while(getItemPos(items, removeItem) == -1){
+         System.out.println("That item cannot be found in the fridge.\nPlease enter a new item:");
+         removeItem = sc.nextLine();
+      }
+      
+      //finds location of the item
+      itemPos = getItemPos(items, removeItem);
+      
+      System.out.println("What unit are you removing the item from?");
+      userUnit = getValidUnit();
+      
+      //checks to see if the user is taking the item out in a valid unit
+      while(!doUnitsMatch(userUnit, units, itemPos)){
+         System.out.println("There was a problem with the unit you selected. The item in the fridge is using " + units[itemPos] + ".");
+         System.out.println("\nPlease make sure that you're removing the item in the same category of units as the fridge (eg. mg <-> g or mL <-> L)");
+         userUnit = getValidUnit();
+      }
+      
+      System.out.println("And how much of it will we be removing?");
+      removeQuantity = getValidQuantity();
+      
+      while(quantity[itemPos] < convertUnits(removeQuantity, userUnit, itemPos, units)){
+         System.out.println("You're attempting to remove more than what you have.\nPlease enter a new amount to remove:");
+         removeQuantity = getValidQuantity();
+      }
+      
+      //convert units here
+      convertedQuantity = convertUnits(removeQuantity, userUnit, itemPos, units);
+         
+      //new, converted quantity is set to the empty position
+      quantity[itemPos] -= convertedQuantity;
+      
+      System.out.println("\nYou just removed " + removeQuantity + " " + userUnit + " of " + removeItem);
+      
+      Sort.selectionSort(items, quantity, units);
+   }//end removeItem
    
    
    //checks if the item is already in the fridge
@@ -312,14 +366,12 @@ public class SmartFridge{
    }//end isItemPresent
    
    
-   //WIP
-   //MUST BE IN ALPHABETICAL ORDER
+   //WIP - make prettier
    public static void printFridge(String[] items, double[] quantity, String[] units){
       System.out.println("Fridge contents:\n");
       for(int i = 0; i < items.length; i++){
-         //checks if the item is null or actually has something
+         //will only print if the item has a quantity
          if(quantity[i] != 0){
-            //make this prettier later
             System.out.println(items[i] + " " + quantity[i] + " " + units[i]);
          }
       }//end for loop
