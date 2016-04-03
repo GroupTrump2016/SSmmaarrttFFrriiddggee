@@ -60,32 +60,7 @@ public class SmartFridge{
                      units = ExpandArray.expand(units);
                   }
                   
-                  Scanner sc = new Scanner(System.in);
-                  
-                  System.out.println("What would you like to put in?");
-                  String newItem = sc.nextLine();
-                  
-                  System.out.println("What unit are you storing this in?");
-                  String userUnit = getValidUnit();
-                  
-                  //check if the current item is in the fridge already
-                  //if not add it to an empty position
-                  int itemPos = getItemPos(items, newItem);
-                  
-                  //checks the unit matches the category of units in the fridge
-                  if(itemPos != -1){
-                     while(!doUnitsMatch(userUnit, units, itemPos)){
-                        System.out.println("There was a problem with the unit you selected. The item in the fridge is using " + units[itemPos] + ".");
-                        System.out.println("\nPlease make sure that you're storing the item in the same category of units as the fridge (eg. mg <-> g or mL <-> L)");
-                        userUnit = getValidUnit();
-                     }
-                  }
-                  
-                  System.out.println("And how much of it will we be storing?");
-                  double newQuantity = getValidQuantity();
-      
-                  
-                  addItem(items, quantity, units, newItem, userUnit, newQuantity, itemPos);
+                  addItem(items, quantity, units);
                   
                   Sort.selectionSort(items, quantity, units);
                   break;
@@ -210,10 +185,32 @@ public class SmartFridge{
    }//end getNullPosition
    
    
-   public static void addItem(String[] items, double[] quantity, String[] units, String newItem, String userUnit, double newQuantity, int itemPos){
+   public static void addItem(String[] items, double[] quantity, String[] units){
       //these variables are for the new item being put in
       double convertedQuantity = 0;
       Scanner sc = new Scanner(System.in);
+                  
+      System.out.println("What would you like to put in?");
+      String newItem = sc.nextLine();
+                  
+      System.out.println("What unit are you storing this in?");
+      String userUnit = getValidUnit();
+                  
+      //check if the current item is in the fridge already
+      //if not add it to an empty position
+      int itemPos = getItemPos(items, newItem);
+                  
+      //checks the unit matches the category of units in the fridge
+      if(itemPos != -1){
+         while(!doUnitsMatch(userUnit, units, itemPos)){
+            System.out.println("There was a problem with the unit you selected. The item in the fridge is using " + units[itemPos] + ".");
+            System.out.println("\nPlease make sure that you're storing the item in the same category of units as the fridge (eg. mg <-> g or mL <-> L)");
+            userUnit = getValidUnit();
+         }
+      }
+      
+      System.out.println("And how much of it will we be storing?");
+      double newQuantity = getValidQuantity();
       
       if(itemPos == -1){
          items[getNullPosition(quantity)] = newItem;
@@ -462,12 +459,17 @@ public class SmartFridge{
       double newQuantity;
       int position;
       String currentLine = "";
-      int commaIndex;
       
       System.out.println("Please enter the file name of a .txt file to import from:");
       fileName = sc.next();
       
       File importFile = new File(fileName + ".txt");
+      
+      //checks if the file exists in the root directory
+      if(!importFile.exists()){
+         System.out.println("\nThat file does not exist.");
+         return;
+      }
       
       Scanner fileSc = new Scanner(importFile);
       
@@ -482,10 +484,14 @@ public class SmartFridge{
             currentLine = fileSc.nextLine();
             Scanner line = new Scanner(currentLine);
             
+            //retrieves item name, concatenates items with multiple words (eg. orange juice)
             newItem = line.next();
-            if(!line.hasNextDouble()){
+            while(!line.hasNextDouble()){
                newItem += " " + line.next();
             }
+            
+            //removes the comma from the item string
+            newItem = newItem.substring(0, newItem.length() - 1);
             
             System.out.println("\nnewItem is " + newItem);
             
