@@ -94,6 +94,20 @@ public class SmartFridge{
                
                break;
             case 5://remove all items
+               System.out.println("Are you sure you want to remove ALL the items in the fridge?");
+               
+               //calls method to remove items (or not if they pick no)
+               if(yesOrNo()){
+                  items = ShrinkArray.clear(items, DEFAULT_SIZE);
+                  units = ShrinkArray.clear(units, DEFAULT_SIZE);
+                  quantity = ShrinkArray.clear(quantity, DEFAULT_SIZE);
+                  
+                  System.out.println("\nRemoved!");
+               }
+               else{
+                  System.out.println("\nDid not remove.");
+               }
+               
                
                break;
             case 6://imports file
@@ -155,6 +169,40 @@ public class SmartFridge{
       System.out.println("7. Exit the fridge");
 	}//end printMenu
 	
+   
+   
+   public static boolean yesOrNo(){
+      Scanner sc = new Scanner(System.in);
+      boolean validInput = false;
+      char input = 'A';
+      String check;
+      
+      //gets a valid Y or N from the user
+      while(!validInput){
+         System.out.println("Please enter Y (Yes) or N (No):");
+         check = sc.next();
+         
+         while(check.length() > 1){
+            System.out.println("Please enter Y (Yes) or N (No):");
+            check = sc.next();
+         }
+         
+         input = check.charAt(0);
+         
+         //checks if the value inputted is Y or N
+         if(input == 'Y' || input == 'y'){
+            validInput = true;
+            return true;
+         }
+         
+         else if(input == 'N' || input == 'n'){
+            validInput = true;
+            return false;
+         }
+      }
+      
+      return false;
+   }
    
    //options is the number of options the menu should have
    //can be reused for submenus (if needed)

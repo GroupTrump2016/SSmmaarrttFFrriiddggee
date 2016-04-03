@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 //finds the length the new array should be
 //then copies the old elements into the new one
 
@@ -35,6 +37,7 @@ public class ShrinkArray{
       return newQuantity;
    }
    
+   //gets the number of non empty quantities so that the shrink method can create a new array of that size
    public static int getNumNonEmpty(double[] quantity){
       int numNonEmpty = 0;
       
@@ -47,5 +50,23 @@ public class ShrinkArray{
       
       return numNonEmpty;
    }
+   
+   
+   //the clear methods will create a new array of the default size
+   //uses method overloading
+   public static String[] clear(String[] stringArr, int DEFAULT_SIZE){
+      String[] newStringArr = new String[DEFAULT_SIZE];
+      Arrays.fill(newStringArr, "");
+      
+      return newStringArr;
+   }
+   
+   public static double[] clear(double[] quantity, int DEFAULT_SIZE){
+      double[] newQuantity = new double[DEFAULT_SIZE];
+      
+      return newQuantity;
+   }
+   
+
    
 }//end class
