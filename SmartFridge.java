@@ -3,6 +3,7 @@ import java.util.Arrays;
 import java.io.File;
 import java.io.IOException;
 import java.util.NoSuchElementException;
+import java.io.PrintWriter;
 
 //requires
 //1. add item
@@ -145,6 +146,8 @@ public class SmartFridge{
                
                Sort.selectionSort(items, quantity, units);
                
+               fileSc.close();
+               
                break;
          }//end switchcase
          
@@ -152,6 +155,11 @@ public class SmartFridge{
       
       //these only get run when the user enters the PROGRAM_END value
       //must ask if user wants to save fridge contents into a file
+      System.out.println("Would you like to save the current contents of the fridge?");
+      if(yesOrNo()){
+         exportFridge(items, quantity, units);
+      }
+      
       System.out.println("Thanks for using the SmartFridge!");
       System.exit(0);
       
@@ -170,6 +178,30 @@ public class SmartFridge{
 	}//end printMenu
 	
    
+   
+   public static void exportFridge(String[] items, double[] quantity, String[] units) throws IOException{
+      Scanner sc = new Scanner(System.in);
+      System.out.println("Please type a filename (no extension) for the exported list:");
+      String fileName = sc.next();
+      sc.close();
+      
+      //if the file exists with that name, the program will not create a new file
+      File exportFile = new File(fileName + ".txt");
+      if(exportFile.exists()){ 
+         System.out.println("The file " + fileName + ".txt already exists and a new file cannot be created.");
+         System.exit(1);
+      }
+      
+      //only exports quantities that are greater than 0
+      PrintWriter pw = new PrintWriter(exportFile);
+      for(int i = 0; i < quantity.length; i++){
+         if(quantity[i] != 0){
+            pw.println(items[i] + ", " + quantity[i] + " " + units[i]);
+         }
+      }
+      
+      pw.close();
+   }
    
    public static boolean yesOrNo(){
       Scanner sc = new Scanner(System.in);
@@ -540,75 +572,75 @@ public class SmartFridge{
       String currentLine = "";
       
       
-         newUnit = "";
-            
-         currentLine = fileSc.nextLine();
-         Scanner line = new Scanner(currentLine);
+      newUnit = "";
+      
+      currentLine = fileSc.nextLine();
+      Scanner line = new Scanner(currentLine);
          
-         //retrieves item name, concatenates items with multiple words (eg. orange juice)
-         newItem = line.next();
-         while(!line.hasNextDouble()){
-            newItem += " " + line.next();
-         }
+      //retrieves item name, concatenates items with multiple words (eg. orange juice)
+      newItem = line.next();
+      while(!line.hasNextDouble()){
+         newItem += " " + line.next();
+      }
          
-         //removes the comma from the item string
-         newItem = newItem.substring(0, newItem.length() - 1);
-            
-         newQuantity = line.nextDouble();
-            
-         //checks to see if there are units or nothing (as in 4 tomatoes)
-         try{
-            newUnit = line.next();
-         }
-         catch(NoSuchElementException e){
-            //nothing happens, it just catches the exception
-         }
+      //removes the comma from the item string
+      newItem = newItem.substring(0, newItem.length() - 1);
          
-         //check if the current item is in the fridge already
-         //if not add it to an empty position
-         int itemPos = getItemPos(items, newItem);
+      newQuantity = line.nextDouble();
          
-         //checks the unit matches the category of units in the fridge
-         if(itemPos != -1){
-            if(!doUnitsMatch(newUnit, units, itemPos)){
-               System.out.println("The item is currently being stored in a different unit.");
-               System.out.println("Please change it before attempting again.");
-            }
+      //checks to see if there are units or nothing (as in 4 tomatoes)
+      try{
+         newUnit = line.next();
+      }
+      catch(NoSuchElementException e){
+         //nothing happens, it just catches the exception
+      }
+      
+      //check if the current item is in the fridge already
+      //if not add it to an empty position
+      int itemPos = getItemPos(items, newItem);
+      
+      //checks the unit matches the category of units in the fridge
+      if(itemPos != -1){
+         if(!doUnitsMatch(newUnit, units, itemPos)){
+            System.out.println("The item is currently being stored in a different unit.");
+            System.out.println("Please change it before attempting again.");
          }
-            
-         //actually adds the item to the arrays here
-         if(itemPos == -1){
-            items[getNullPosition(quantity)] = newItem;
-            units[getNullPosition(quantity)] = newUnit;
-            quantity[getNullPosition(quantity)] = newQuantity;
-            
-            if(newUnit.equalsIgnoreCase("")){
-               System.out.println("\nYou just stored " + newQuantity + " " + newItem);
-            }
-            else{
-               System.out.println("\nYou just stored " + newQuantity + " " + newUnit + " of " + newItem);
-            }
+      }
+         
+      //actually adds the item to the arrays here
+      if(itemPos == -1){
+         items[getNullPosition(quantity)] = newItem;
+         units[getNullPosition(quantity)] = newUnit;
+         quantity[getNullPosition(quantity)] = newQuantity;
+         
+         if(newUnit.equalsIgnoreCase("")){
+            System.out.println("\nYou just stored " + newQuantity + " " + newItem);
          }
-            
          else{
-            //convert units here
-            convertedQuantity = convertUnits(newQuantity, newUnit, itemPos, units);
-            
-            //new, converted quantity is set to the empty position
-            quantity[itemPos] += convertedQuantity;
-            
-            if(newUnit.equalsIgnoreCase("")){
-               System.out.println("\nYou just stored " + newQuantity + " " + newItem);
-            }
-            else{
-               System.out.println("\nYou just stored " + newQuantity + " " + newUnit + " of " + newItem);
-            }
+            System.out.println("\nYou just stored " + newQuantity + " " + newUnit + " of " + newItem);
          }
+      }
          
-         if(items.length == MAX_SIZE){
-            System.out.println("\nThe fridge is full!\nThe last item that was added was " + newItem);
+      else{
+         //convert units here
+         convertedQuantity = convertUnits(newQuantity, newUnit, itemPos, units);
+         
+         //new, converted quantity is set to the empty position
+         quantity[itemPos] += convertedQuantity;
+         
+         if(newUnit.equalsIgnoreCase("")){
+            System.out.println("\nYou just stored " + newQuantity + " " + newItem);
          }
-         
+         else{
+            System.out.println("\nYou just stored " + newQuantity + " " + newUnit + " of " + newItem);
+         }
+      }
+      
+      if(items.length == MAX_SIZE){
+         System.out.println("\nThe fridge is full!\nThe last item that was added was " + newItem);
+      }
+      
       
    }
    
