@@ -27,12 +27,13 @@ public class SmartFridge{
       String[] units = new String[DEFAULT_SIZE];
       double[] quantity = new double[DEFAULT_SIZE];
       
+      //replaces null elements with blanks
       Arrays.fill(items, "");
       Arrays.fill(units, "");
       
       System.out.println("Welcome to the SmartFridge.");
       
-      //repeats until the user chooses to exit (when they enter 5)
+      //repeats until the user chooses to exit (when they enter PROGRAM_END)
       while(userOption != PROGRAM_END){
          //prints the menu of options
          System.out.println("\n=========================================");
@@ -47,7 +48,7 @@ public class SmartFridge{
          
          //determines where to go depending on what the user entered
          switch(userOption){
-            case 1:
+            case 1://adds item
                if(items.length > MAX_SIZE){
                   System.out.println("\nYour fridge is full!\nYou can't add anymore items until you take some out.");
                   break;
@@ -65,7 +66,7 @@ public class SmartFridge{
                   Sort.selectionSort(items, quantity, units);
                   break;
                }
-            case 2:
+            case 2://removes item
                if(checkEmpty(quantity)){
                   System.out.println("\nYour fridge is empty!\nYou need stuff in there before you can take them out.");
                   break;
@@ -80,7 +81,7 @@ public class SmartFridge{
                   Sort.selectionSort(items, quantity, units);
                   break;
                }
-            case 3:
+            case 3://prints fridge
                if(checkEmpty(quantity)){
                   System.out.println("\nYour fridge is empty!");
                   break;
@@ -89,15 +90,47 @@ public class SmartFridge{
                   printFridge(items, quantity, units);
                   break;
                }
-            case 4:
-               //enter recipe option
+            case 4://enter recipe option
+               
                break;
-            case 5:
-               //remove all items
+            case 5://remove all items
+               
                break;
-            case 6:
-               //enter file
-               importFile(items, quantity, units, MAX_SIZE);
+            case 6://imports file
+               //all this stuff is here instead of a method because the arrays need to expand to accomodate the new items
+               //creating a new array in a method will require additional method calls to save the new location of the array so that main can use it again
+               //all those new method calls is LESS friendly on resources
+               Scanner input = new Scanner(System.in);
+               
+               System.out.println("Please enter the file name of a .txt file to import from:");
+               String fileName = input.next();
+               
+               File importFile = new File(fileName + ".txt");
+               
+               //checks if the file exists in the root directory
+               if(!importFile.exists()){
+                  System.out.println("\nThat file does not exist.");
+                  break;
+               }
+               
+               Scanner fileSc = new Scanner(importFile);
+               
+               //keeps scanning the next line until it reaches the end
+               try{
+                  while(items.length < MAX_SIZE){
+                     items = ExpandArray.expand(items);
+                     quantity = ExpandArray.expand(quantity);
+                     units = ExpandArray.expand(units);
+                     
+                     importFile(items, quantity, units, MAX_SIZE, fileSc);
+                  }//end while
+               }
+               catch(NoSuchElementException e){
+                  System.out.println("\nEnd of file");
+               }
+               
+               Sort.selectionSort(items, quantity, units);
+               
                break;
          }//end switchcase
          
@@ -415,8 +448,8 @@ public class SmartFridge{
       quantity[itemPos] -= convertedQuantity;
       
       if(userUnit.equalsIgnoreCase("")){
-            System.out.println("\nYou just removed " + removeQuantity + " " + removeItem);
-         }
+         System.out.println("\nYou just removed " + removeQuantity + " " + removeItem);
+      }
       else{
          System.out.println("\nYou just removed " + removeQuantity + " " + userUnit + " of " + removeItem);
       }
@@ -453,72 +486,81 @@ public class SmartFridge{
    }
    
    
-   public static void importFile(String[] items, double[] quantity, String[] units, int MAX_SIZE) throws IOException{
-      Scanner sc = new Scanner(System.in);
-      String fileName, newItem = "", newUnit;
-      double newQuantity;
-      int position;
+   public static void importFile(String[] items, double[] quantity, String[] units, int MAX_SIZE, Scanner fileSc) throws IOException{
+      String newItem = "", newUnit;
+      double newQuantity, convertedQuantity;
       String currentLine = "";
       
-      System.out.println("Please enter the file name of a .txt file to import from:");
-      fileName = sc.next();
       
-      File importFile = new File(fileName + ".txt");
-      
-      //checks if the file exists in the root directory
-      if(!importFile.exists()){
-         System.out.println("\nThat file does not exist.");
-         return;
-      }
-      
-      Scanner fileSc = new Scanner(importFile);
-      
-      try{
-         while(items.length < MAX_SIZE){
-            newUnit = "";
+         newUnit = "";
             
-            items = ExpandArray.expand(items);
-            quantity = ExpandArray.expand(quantity);
-            units = ExpandArray.expand(units);
-               
-            currentLine = fileSc.nextLine();
-            Scanner line = new Scanner(currentLine);
+         currentLine = fileSc.nextLine();
+         Scanner line = new Scanner(currentLine);
+         
+         //retrieves item name, concatenates items with multiple words (eg. orange juice)
+         newItem = line.next();
+         while(!line.hasNextDouble()){
+            newItem += " " + line.next();
+         }
+         
+         //removes the comma from the item string
+         newItem = newItem.substring(0, newItem.length() - 1);
             
-            //retrieves item name, concatenates items with multiple words (eg. orange juice)
-            newItem = line.next();
-            while(!line.hasNextDouble()){
-               newItem += " " + line.next();
+         newQuantity = line.nextDouble();
+            
+         //checks to see if there are units or nothing (as in 4 tomatoes)
+         try{
+            newUnit = line.next();
+         }
+         catch(NoSuchElementException e){
+            //nothing happens, it just catches the exception
+         }
+         
+         //check if the current item is in the fridge already
+         //if not add it to an empty position
+         int itemPos = getItemPos(items, newItem);
+         
+         //checks the unit matches the category of units in the fridge
+         if(itemPos != -1){
+            if(!doUnitsMatch(newUnit, units, itemPos)){
+               System.out.println("The item is currently being stored in a different unit.");
+               System.out.println("Please change it before attempting again.");
             }
+         }
             
-            //removes the comma from the item string
-            newItem = newItem.substring(0, newItem.length() - 1);
+         //actually adds the item to the arrays here
+         if(itemPos == -1){
+            items[getNullPosition(quantity)] = newItem;
+            units[getNullPosition(quantity)] = newUnit;
+            quantity[getNullPosition(quantity)] = newQuantity;
             
-            System.out.println("\nnewItem is " + newItem);
-            
-            newQuantity = line.nextDouble();
-            System.out.println("newQuantity is " + newQuantity);
-
-            try{
-               newUnit = line.next();
+            if(newUnit.equalsIgnoreCase("")){
+               System.out.println("\nYou just stored " + newQuantity + " " + newItem);
             }
-            catch(NoSuchElementException e){
-               //nothing happens, it just catches the exception
+            else{
+               System.out.println("\nYou just stored " + newQuantity + " " + newUnit + " of " + newItem);
             }
+         }
             
-            System.out.println("newUnit is " + newUnit);
+         else{
+            //convert units here
+            convertedQuantity = convertUnits(newQuantity, newUnit, itemPos, units);
             
-            //actually adds the item to the arrays here
+            //new, converted quantity is set to the empty position
+            quantity[itemPos] += convertedQuantity;
             
+            if(newUnit.equalsIgnoreCase("")){
+               System.out.println("\nYou just stored " + newQuantity + " " + newItem);
+            }
+            else{
+               System.out.println("\nYou just stored " + newQuantity + " " + newUnit + " of " + newItem);
+            }
          }
          
          if(items.length == MAX_SIZE){
             System.out.println("\nThe fridge is full!\nThe last item that was added was " + newItem);
          }
-      }
-      
-      catch(NoSuchElementException e){
-         System.out.println("End of file");
-      }
+         
       
    }
    
