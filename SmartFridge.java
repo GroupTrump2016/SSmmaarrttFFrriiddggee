@@ -32,7 +32,40 @@ public class SmartFridge{
       Arrays.fill(items, "");
       Arrays.fill(units, "");
       
-      System.out.println("Welcome to the SmartFridge.");
+      //the try-catch is testing if there was an argument passed in
+      if(args.length > 0){
+         String fileName = args[0];
+         System.out.println("Argument detected!");
+         File importFile = new File(fileName + ".txt");
+         
+         //checks if the argument exists in the root directory
+         if(!importFile.exists()){
+            System.out.println("\nThe file that was attempted to be passed in does not exist.");
+         }
+         else{
+            Scanner fileSc = new Scanner(importFile);
+            
+            //keeps scanning the next line until it reaches the end
+            try{
+               while(items.length < MAX_SIZE){
+                  items = ExpandArray.expand(items);
+                  quantity = ExpandArray.expand(quantity);
+                  units = ExpandArray.expand(units);
+                  
+                  importFile(items, quantity, units, MAX_SIZE, fileSc);
+               }//end while
+            }
+            catch(NoSuchElementException e){
+               System.out.println("\nEnd of file");
+            }
+            
+            Sort.selectionSort(items, quantity, units);
+            
+            fileSc.close();
+         }
+      }
+      
+      System.out.println("\nWelcome to the SmartFridge.");
       
       //repeats until the user chooses to exit (when they enter PROGRAM_END)
       while(userOption != PROGRAM_END){
