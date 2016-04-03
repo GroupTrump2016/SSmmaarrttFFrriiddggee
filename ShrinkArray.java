@@ -1,5 +1,7 @@
 //finds the length the new array should be
 //then copies the old elements into the new one
+
+//uses method overloading to determine which method to use
 public class ShrinkArray{
    
    public static String[] shrink(double[] quantity, String[] stringArr){
