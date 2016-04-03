@@ -1,5 +1,8 @@
 import java.util.Scanner;
 import java.util.Arrays;
+import java.io.File;
+import java.io.IOException;
+import java.util.NoSuchElementException;
 
 //requires
 //1. add item
@@ -11,13 +14,10 @@ import java.util.Arrays;
 //6. enter file
 //7. ezit program
 
-//the fridge will need to eliminate 0 quantity elements to reduce crap in there
 //when a file is imported then the array needs to be increased by the amount of items in the file
 
-//max fridge size is 40 items
-
 public class SmartFridge{
-	public static void main(String[] args){
+	public static void main(String[] args) throws IOException{
       //sets a default value
       int userOption = -1;
       //sets the value for the user to exit the program with; sets the max fridge size; sets the default fridge size
@@ -60,7 +60,32 @@ public class SmartFridge{
                      units = ExpandArray.expand(units);
                   }
                   
-                  addItem(items, quantity, units);
+                  Scanner sc = new Scanner(System.in);
+                  
+                  System.out.println("What would you like to put in?");
+                  String newItem = sc.nextLine();
+                  
+                  System.out.println("What unit are you storing this in?");
+                  String userUnit = getValidUnit();
+                  
+                  //check if the current item is in the fridge already
+                  //if not add it to an empty position
+                  int itemPos = getItemPos(items, newItem);
+                  
+                  //checks the unit matches the category of units in the fridge
+                  if(itemPos != -1){
+                     while(!doUnitsMatch(userUnit, units, itemPos)){
+                        System.out.println("There was a problem with the unit you selected. The item in the fridge is using " + units[itemPos] + ".");
+                        System.out.println("\nPlease make sure that you're storing the item in the same category of units as the fridge (eg. mg <-> g or mL <-> L)");
+                        userUnit = getValidUnit();
+                     }
+                  }
+                  
+                  System.out.println("And how much of it will we be storing?");
+                  double newQuantity = getValidQuantity();
+      
+                  
+                  addItem(items, quantity, units, newItem, userUnit, newQuantity, itemPos);
                   
                   Sort.selectionSort(items, quantity, units);
                   break;
@@ -97,12 +122,14 @@ public class SmartFridge{
                break;
             case 6:
                //enter file
+               importFile(items, quantity, units, MAX_SIZE);
                break;
          }//end switchcase
          
       }//end while check
       
       //these only get run when the user enters the PROGRAM_END value
+      //must ask if user wants to save fridge contents into a file
       System.out.println("Thanks for using the SmartFridge!");
       System.exit(0);
       
@@ -183,34 +210,10 @@ public class SmartFridge{
    }//end getNullPosition
    
    
-   public static void addItem(String[] items, double[] quantity, String[] units){
+   public static void addItem(String[] items, double[] quantity, String[] units, String newItem, String userUnit, double newQuantity, int itemPos){
       //these variables are for the new item being put in
-      String newItem, userUnit;
-      double newQuantity, convertedQuantity = 0;
-      int itemPos;
+      double convertedQuantity = 0;
       Scanner sc = new Scanner(System.in);
-      
-      System.out.println("What would you like to put in?");
-      newItem = sc.nextLine();
-      
-      System.out.println("What unit are you storing this in?");
-      userUnit = getValidUnit();
-      
-      //check if the current item is in the fridge already
-      //if not add it to an empty position
-      itemPos = getItemPos(items, newItem);
-      
-      //checks the unit matches the category of units in the fridge
-      if(itemPos != -1){
-         while(!doUnitsMatch(userUnit, units, itemPos)){
-            System.out.println("There was a problem with the unit you selected. The item in the fridge is using " + units[itemPos] + ".");
-            System.out.println("\nPlease make sure that you're storing the item in the same category of units as the fridge (eg. mg <-> g or mL <-> L)");
-            userUnit = getValidUnit();
-         }
-      }
-      
-      System.out.println("And how much of it will we be storing?");
-      newQuantity = getValidQuantity();
       
       if(itemPos == -1){
          items[getNullPosition(quantity)] = newItem;
@@ -243,7 +246,6 @@ public class SmartFridge{
    }//end addItem
    
    
-   //WIP
    public static String getValidUnit(){
       //checks if the user entered mL, L, g, mg, lb, no units, ignoring uppercase
       boolean valid = false;
@@ -254,6 +256,37 @@ public class SmartFridge{
       userUnit = sc.nextLine();
       
       //need a check to see if the user is entering valid units
+      while(!valid){
+         if(userUnit.equalsIgnoreCase("mL")){
+            valid = true;
+         }
+         
+         else if(userUnit.equalsIgnoreCase("L")){
+            valid = true;
+         }
+         
+         else if(userUnit.equalsIgnoreCase("g")){
+            valid = true;
+         }
+         
+         else if(userUnit.equalsIgnoreCase("mg")){
+            valid = true;
+         }
+         
+         else if(userUnit.equalsIgnoreCase("lb")){
+            valid = true;
+         }
+         
+         else if(userUnit.equalsIgnoreCase("")){
+            valid = true;
+         }
+         
+         else{
+            System.out.println("Please enter valid units.");
+            System.out.println("Valid units = mL, L, g, mg, lb, or leave blank for quantity (eg. 3 Potatoes):");
+            userUnit = sc.nextLine();
+         }
+      }
       
       return userUnit;
       
@@ -394,6 +427,9 @@ public class SmartFridge{
    }//end removeItem
    
    
+   
+   
+   
    //checks if the item is already in the fridge
    //if it does, it returns the position
    //if it doesn't, it returns -1
@@ -417,6 +453,67 @@ public class SmartFridge{
       }
       
       return true;
+   }
+   
+   
+   public static void importFile(String[] items, double[] quantity, String[] units, int MAX_SIZE) throws IOException{
+      Scanner sc = new Scanner(System.in);
+      String fileName, newItem = "", newUnit;
+      double newQuantity;
+      int position;
+      String currentLine = "";
+      int commaIndex;
+      
+      System.out.println("Please enter the file name of a .txt file to import from:");
+      fileName = sc.next();
+      
+      File importFile = new File(fileName + ".txt");
+      
+      Scanner fileSc = new Scanner(importFile);
+      
+      try{
+         while(items.length < MAX_SIZE){
+            newUnit = "";
+            
+            items = ExpandArray.expand(items);
+            quantity = ExpandArray.expand(quantity);
+            units = ExpandArray.expand(units);
+               
+            currentLine = fileSc.nextLine();
+            Scanner line = new Scanner(currentLine);
+            
+            newItem = line.next();
+            if(!line.hasNextDouble()){
+               newItem += " " + line.next();
+            }
+            
+            System.out.println("\nnewItem is " + newItem);
+            
+            newQuantity = line.nextDouble();
+            System.out.println("newQuantity is " + newQuantity);
+
+            try{
+               newUnit = line.next();
+            }
+            catch(NoSuchElementException e){
+               //nothing happens, it just catches the exception
+            }
+            
+            System.out.println("newUnit is " + newUnit);
+            
+            //actually adds the item to the arrays here
+            
+         }
+         
+         if(items.length == MAX_SIZE){
+            System.out.println("\nThe fridge is full!\nThe last item that was added was " + newItem);
+         }
+      }
+      
+      catch(NoSuchElementException e){
+         System.out.println("End of file");
+      }
+      
    }
    
    //WIP - make prettier
