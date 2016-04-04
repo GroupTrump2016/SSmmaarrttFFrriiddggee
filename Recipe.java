@@ -7,11 +7,7 @@ import java.io.PrintWriter;
 
 public class Recipe{
    
-   public static void main(String[] args) throws IOException{
-      enterRecipeMenu();
-   }
-   
-   public static void enterRecipeMenu() throws IOException{
+   public static void enterRecipeMenu(String[] items, double[] quantity, String[] units) throws IOException{
       int userOption = -1;
       final int RETURN_TO_MAIN = 6;
       
@@ -39,6 +35,7 @@ public class Recipe{
                printRecipe();
                break;
             case 4:
+               getMissingItems(items, quantity, units);
             case 5:
                
          }//end switchcase
@@ -49,6 +46,7 @@ public class Recipe{
       
    }
    
+   //prints the menu for the options
    public static void printRecipeMenu() throws IOException{
       System.out.println("\n1. Add recipe");
       System.out.println("2. Delete recipe");
@@ -144,7 +142,7 @@ public class Recipe{
       
    }
    
-   
+   //prints recipe
    public static void printRecipe() throws IOException{
       Scanner sc = new Scanner(System.in);
       
@@ -168,12 +166,112 @@ public class Recipe{
          }
       }
       catch(NoSuchElementException e){
-         System.out.println("\nEnd of file");
+         System.out.println("\nEnd of file.");
       }
       
       fileSc.close();
       
+   }
+   
+   //gets the outstanding items
+   public static void getMissingItems(String[] items, double[] quantity, String[] units) throws IOException{
+      Scanner sc = new Scanner(System.in);
       
+      System.out.println("Please enter the file name of a recipe you want to check from:");
+      String fileName = sc.next();
+      
+      File importFile = new File("recipes//" + fileName + ".txt");
+      
+      //checks if the file exists in the root directory
+      if(!importFile.exists()){
+         System.out.println("\nThat file does not exist.");
+         return;
+      }
+      
+      Scanner fileSc = new Scanner(importFile);
+      
+      File exportFile = new File("recipes//" + fileName + "_missingitems.txt");
+      PrintWriter pw = new PrintWriter(exportFile);
+      
+      //keeps scanning the next line until it reaches the end
+      try{
+         importFile(items, quantity, units, fileSc, exportFile, pw);
+      }
+      catch(NoSuchElementException e){
+         System.out.println("\nEnd of file.");
+      }
+      
+      fileSc.close();
+      
+      if(exportFile.exists()){
+         System.out.println("Shopping list created.");
+      }
+      else{
+         System.out.println("There was a problem and the list could not be created.");
+      }
+   }
+   
+   
+   public static void importFile(String[] items, double[] quantity, String[] units, Scanner fileSc, File exportFile, PrintWriter pw) throws IOException{
+      String newItem = "", newUnit = "";
+      double newQuantity, convertedQuantity;
+      String currentLine = "";
+      
+      while(fileSc.hasNextLine()){
+         currentLine = fileSc.nextLine();
+         Scanner line = new Scanner(currentLine);
+      
+         newUnit = "";
+         
+         //retrieves item name, concatenates items with multiple words (eg. orange juice)
+         newItem = line.next();
+         while(!line.hasNextDouble()){
+            newItem += " " + line.next();
+         }
+            
+         //removes the comma from the item string
+         newItem = newItem.substring(0, newItem.length() - 1);
+            
+         newQuantity = line.nextDouble();
+            
+         //checks to see if there are units or nothing (as in 4 tomatoes)
+         try{
+            newUnit = line.next();
+         }
+         catch(NoSuchElementException e){
+            //nothing happens, it just catches the exception
+         }
+         
+         //check if the current item is in the fridge already
+         //if not add it to an empty position
+         int itemPos = InputAndTools.getItemPos(items, newItem);
+         
+         //checks the unit matches the category of units in the fridge
+         if(itemPos != -1){
+            if(!InputAndTools.doUnitsMatch(newUnit, units, itemPos)){
+               System.out.println("The item, " + newItem + ", is currently being stored in a different unit.");
+               System.out.println("Please change it before attempting again.");
+            }
+         }
+            
+         //prints to the missingitems file the missing item
+         if(itemPos == -1){
+            pw.println(newItem + ", " + newQuantity + " " + newUnit);
+         }
+         
+         else{
+            //convert units here
+            convertedQuantity = InputAndTools.convertUnits(newQuantity, newUnit, itemPos, units);
+            
+            if(quantity[itemPos] < newQuantity){
+               pw.println(newItem + ", " + (newQuantity - quantity[itemPos]) + " " + newUnit);
+            }
+         }
+         
+      
+      }
+      
+      pw.close();
    }
    
 }

@@ -125,7 +125,7 @@ public class SmartFridge{
                   break;
                }
             case 4://enter recipe option
-               Recipe.enterRecipeMenu();
+               Recipe.enterRecipeMenu(items, quantity, units);
                break;
             case 5://remove all items
                System.out.println("Are you sure you want to remove ALL the items in the fridge?");
@@ -418,7 +418,6 @@ public class SmartFridge{
       if(items.length == MAX_SIZE){
          System.out.println("\nThe fridge is full!\nThe last item that was added was " + newItem);
       }
-      
       
    }
    
