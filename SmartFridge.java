@@ -125,7 +125,7 @@ public class SmartFridge{
                   break;
                }
             case 4://enter recipe option
-               
+               Recipe.enterRecipeMenu();
                break;
             case 5://remove all items
                System.out.println("Are you sure you want to remove ALL the items in the fridge?");
@@ -208,10 +208,7 @@ public class SmartFridge{
       System.out.println("6. Enter file");
       System.out.println("7. Exit the fridge");
 	}//end printMenu
-	
-   public static void printRecipeMenu(){
-      
-   }
+   
    
    public static void exportFridge(String[] items, double[] quantity, String[] units) throws IOException{
       Scanner sc = new Scanner(System.in);

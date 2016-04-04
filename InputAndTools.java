@@ -4,6 +4,15 @@ import java.util.Scanner;
 //it's all here to reduce clutter on the main class
 public class InputAndTools{
    
+   //bypasses issues with scanners with sc.next() and sc.nextLine() right after
+   public static String getItemName(){
+      Scanner sc = new Scanner(System.in);
+      
+      String name = sc.nextLine();
+      
+      return name;
+   }
+   
    //options is the number of options the menu should have
    //can be reused for submenus (if needed)
 	public static int getMenuInput(int options){
