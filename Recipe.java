@@ -204,10 +204,10 @@ public class Recipe{
       fileSc.close();
       
       if(exportFile.exists()){
-         System.out.println("Shopping list created.");
+         System.out.println("\nShopping list created.");
       }
       else{
-         System.out.println("There was a problem and the list could not be created.");
+         System.out.println("\nThere was a problem and the list could not be created.");
       }
    }
    
@@ -243,13 +243,12 @@ public class Recipe{
          }
          
          //check if the current item is in the fridge already
-         //if not add it to an empty position
          int itemPos = InputAndTools.getItemPos(items, newItem);
          
          //checks the unit matches the category of units in the fridge
          if(itemPos != -1){
             if(!InputAndTools.doUnitsMatch(newUnit, units, itemPos)){
-               System.out.println("The item, " + newItem + ", is currently being stored in a different unit.");
+               System.out.println("\nThe item, " + newItem + ", is currently being stored in a different unit.");
                System.out.println("Please change it before attempting again.");
             }
          }
@@ -263,8 +262,12 @@ public class Recipe{
             //convert units here
             convertedQuantity = InputAndTools.convertUnits(newQuantity, newUnit, itemPos, units);
             
-            if(quantity[itemPos] < newQuantity){
+            //checks if the item should be added to the list according to the units (will export full value if units don't match)
+            if(quantity[itemPos] < newQuantity && InputAndTools.doUnitsMatch(newUnit, units, itemPos)){
                pw.println(newItem + ", " + (newQuantity - quantity[itemPos]) + " " + newUnit);
+            }
+            else if(quantity[itemPos] < newQuantity && !InputAndTools.doUnitsMatch(newUnit, units, itemPos)){
+               pw.println(newItem + ", " + newQuantity + " " + newUnit);
             }
          }
          
