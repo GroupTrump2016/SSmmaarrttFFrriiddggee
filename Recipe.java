@@ -33,6 +33,7 @@ public class Recipe{
                addRecipe();
                break;
             case 2:
+               deleteRecipe();
                break;
             case 4:
             case 5:
@@ -54,6 +55,7 @@ public class Recipe{
       System.out.println("6. Return to main menu");
    }
    
+   //add a recipe
    public static void addRecipe() throws IOException{
       Scanner sc = new Scanner(System.in);
       System.out.println("Please type a filename (no extension) for the recipe:");
@@ -70,7 +72,7 @@ public class Recipe{
       }
       
       //if the file exists with that name, the program will not create a new file
-      File exportFile = new File("recipes\\" + fileName + ".txt");
+      File exportFile = new File("recipes//" + fileName + ".txt");
       if(exportFile.exists()){ 
          System.out.println("A recipe under the name of " + fileName + ".txt already exists.");
          System.out.println("Do you want to override it?");
@@ -101,6 +103,40 @@ public class Recipe{
       }
       
       pw.close();
+      
+   }
+   
+   //deletes recipes
+   public static void deleteRecipe(){
+      Scanner sc = new Scanner(System.in);
+      
+      System.out.println("Please type a filename (no extension) for the recipe you want to delete:");
+      String fileName = sc.next();
+      
+      System.out.println("Are you sure you want to delete " + fileName + ".txt?");
+      if(!InputAndTools.yesOrNo()){
+            return;
+      }
+      
+      File exportFile = new File("recipes//" + fileName + ".txt");
+      
+      if(!exportFile.exists()){
+         System.out.println("That recipe does not exist.");
+         return;
+      }
+      
+      //attempts file deletion here
+      exportFile.delete();
+      
+      //checks if successful or not
+      if(!exportFile.exists()){
+         System.out.println("Recipe successfully deleted.");
+         return;
+      }
+      else{
+         System.out.println("There was a problem and the recipe could not be deleted.");
+         return;
+      }
       
    }
    
