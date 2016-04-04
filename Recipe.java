@@ -24,7 +24,7 @@ public class Recipe{
          printRecipeMenu();
          
          //gets valid input
-         //sends in 7 for 7 options
+         //sends in 6 for 6 options
          userOption = InputAndTools.getMenuInput(6);
          
          //determines where to go depending on what the user entered
@@ -34,6 +34,9 @@ public class Recipe{
                break;
             case 2:
                deleteRecipe();
+               break;
+            case 3:
+               printRecipe();
                break;
             case 4:
             case 5:
@@ -115,11 +118,12 @@ public class Recipe{
       
       System.out.println("Are you sure you want to delete " + fileName + ".txt?");
       if(!InputAndTools.yesOrNo()){
-            return;
+         return;
       }
       
       File exportFile = new File("recipes//" + fileName + ".txt");
       
+      //checks if the recipe exists
       if(!exportFile.exists()){
          System.out.println("That recipe does not exist.");
          return;
@@ -137,6 +141,38 @@ public class Recipe{
          System.out.println("There was a problem and the recipe could not be deleted.");
          return;
       }
+      
+   }
+   
+   
+   public static void printRecipe() throws IOException{
+      Scanner sc = new Scanner(System.in);
+      
+      System.out.println("Please enter the file name of a recipe you want to print:");
+      String fileName = sc.next();
+      
+      File importFile = new File("recipes//" + fileName + ".txt");
+      
+      //checks if the file exists in the root directory
+      if(!importFile.exists()){
+         System.out.println("\nThat file does not exist.");
+         return;
+      }
+      
+      Scanner fileSc = new Scanner(importFile);
+      
+      //keeps scanning the next line until it reaches the end
+      try{
+         while(fileSc.hasNextLine()){
+            System.out.println(fileSc.nextLine());
+         }
+      }
+      catch(NoSuchElementException e){
+         System.out.println("\nEnd of file");
+      }
+      
+      fileSc.close();
+      
       
    }
    

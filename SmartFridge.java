@@ -350,7 +350,6 @@ public class SmartFridge{
       double newQuantity, convertedQuantity;
       String currentLine = "";
       
-      
       newUnit = "";
       
       currentLine = fileSc.nextLine();
