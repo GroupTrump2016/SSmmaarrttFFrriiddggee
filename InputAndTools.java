@@ -84,13 +84,24 @@ public class InputAndTools{
    public static double getValidQuantity(){
       Scanner sc = new Scanner(System.in);
       double quantity = -1;
+      boolean validInput = false;
       
-      while(!sc.hasNextDouble()){
-         sc.next();
+      while(!validInput){
+         while(!sc.hasNextDouble()){
+            sc.next();
+            System.out.println("Please enter a valid quantity:");
+         }
+         
+         quantity = sc.nextDouble();
+         
+         //checks if the value inputted meets range
+         if(quantity > 0){
+            validInput = true;
+            return quantity;
+         }
+         
          System.out.println("Please enter a valid quantity:");
       }
-      
-      quantity = sc.nextDouble();
       
       return quantity;
    }//end getValidQuantity
