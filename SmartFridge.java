@@ -79,31 +79,39 @@ public class SmartFridge{
                      units = ExpandArray.expand(units);
                   }
                   
+                  //actually adds the item here
                   addItem(items, quantity, units);
                   
+                  //sorts the arrays 
                   Sort.selectionSort(items, quantity, units);
                   break;
                }
             case 2://removes item
+               //first checks if the fridge is empty
                if(InputAndTools.checkEmpty(quantity)){
                   System.out.println("\nYour fridge is empty!\nYou need stuff in there before you can take them out.");
                   break;
                }
                else{
+                  //removes item
                   removeItem(items, quantity, units);
                   
+                  //shinks the array
                   items = ShrinkArray.shrink(quantity, items);
                   units = ShrinkArray.shrink(quantity, units);
                   quantity = ShrinkArray.shrink(quantity);
                   
+                  //sorts the array
                   Sort.selectionSort(items, quantity, units);
                   break;
                }
             case 3://prints fridge
+               //if the fridge is empty then it will notify user
                if(InputAndTools.checkEmpty(quantity)){
                   System.out.println("\nYour fridge is empty!");
                   break;
                }
+               //if it's not empty then the contents will be printed
                else{
                   printFridge(items, quantity, units);
                   break;
@@ -112,6 +120,12 @@ public class SmartFridge{
                Recipe.enterRecipeMenu(items, quantity, units);
                break;
             case 5://remove all items
+               if(InputAndTools.checkEmpty(quantity)){
+                  System.out.println("\nYour fridge is empty!\nYou need stuff in there before you can take them out.");
+                  break;
+               }
+               
+               //prompts before doing it
                System.out.println("Are you sure you want to remove ALL the items in the fridge?");
                
                //calls method to remove items (or not if they pick no)
@@ -157,7 +171,7 @@ public class SmartFridge{
                   }//end while
                }
                catch(NoSuchElementException e){
-                  System.out.println("\nEnd of file");
+                  System.out.println("\nEnd of file.");
                }
                
                Sort.selectionSort(items, quantity, units);
@@ -172,18 +186,18 @@ public class SmartFridge{
       //these only get run when the user enters the PROGRAM_END value
       //must ask if user wants to save fridge contents into a file
       System.out.println("Would you like to save the current contents of the fridge?");
+      
       if(InputAndTools.yesOrNo()){
          exportFridge(items, quantity, units);
       }
       
-      System.out.println("Thanks for using the SmartFridge!");
+      System.out.println("\nThanks for using the SmartFridge!");
       System.exit(0);
       
 	}//end main
    
 	
 	public static void printMenu(){
-      //clean this later
       System.out.println("\n1. Add item to fridge");
       System.out.println("2. Remove item from fridge");
       System.out.println("3. Display all contents of the fridge");
@@ -266,6 +280,7 @@ public class SmartFridge{
          //new, converted quantity is set to the empty position
          quantity[itemPos] += convertedQuantity;
          
+         //prints a gramatically correct message according to the unit
          if(userUnit.equalsIgnoreCase("")){
             System.out.println("\nYou just stored " + newQuantity + " " + newItem);
          }
@@ -334,6 +349,7 @@ public class SmartFridge{
       double newQuantity, convertedQuantity;
       String currentLine = "";
       
+      //sets the default unit to blank
       newUnit = "";
       
       currentLine = fileSc.nextLine();
@@ -347,7 +363,7 @@ public class SmartFridge{
          
       //removes the comma from the item string
       newItem = newItem.substring(0, newItem.length() - 1);
-         
+      
       newQuantity = line.nextDouble();
          
       //checks to see if there are units or nothing (as in 4 tomatoes)
@@ -365,12 +381,13 @@ public class SmartFridge{
       //checks the unit matches the category of units in the fridge
       if(itemPos != -1){
          if(!InputAndTools.doUnitsMatch(newUnit, units, itemPos)){
-            System.out.println("The item is currently being stored in a different unit.");
+            System.out.println("\nThe item, " + newItem + ", is currently being stored in a different unit.");
             System.out.println("Please change it before attempting again.");
          }
       }
          
       //actually adds the item to the arrays here
+      //does this if it cannot find the item in the fridge/array
       if(itemPos == -1){
          items[InputAndTools.getNullPosition(quantity)] = newItem;
          units[InputAndTools.getNullPosition(quantity)] = newUnit;
@@ -391,6 +408,7 @@ public class SmartFridge{
          //new, converted quantity is set to the empty position
          quantity[itemPos] += convertedQuantity;
          
+         //prints a gramatically correct message according to the unit
          if(newUnit.equalsIgnoreCase("")){
             System.out.println("\nYou just stored " + newQuantity + " " + newItem);
          }

@@ -294,7 +294,7 @@ public class Recipe{
                quantity[itemPos] -= convertedQuantity;
                
                if(newUnit.equalsIgnoreCase(""))
-                  System.out.println("Dispensed " + (int) newQuantity + " " + newItem);
+                  System.out.println("Dispensed " + newQuantity + " " + newItem);
                else
                   System.out.println("Dispensed " + newQuantity + " " + newUnit + " of " + newItem);
             }
