@@ -43,6 +43,10 @@ public class SmartFridge{
                System.out.println("\nEnd of file");
             }
             
+            if(items.length >= MAX_SIZE){
+               System.out.println("\nYour fridge is full!\nYou can't add anymore items until you take some out.");
+            }
+            
             Sort.selectionSort(items, quantity, units);
             
             fileSc.close();
@@ -182,6 +186,10 @@ public class SmartFridge{
                      units = ShrinkArray.shrink(quantity, units);
                      quantity = ShrinkArray.shrink(quantity);
                   }//end while
+                  
+                  if(items.length >= MAX_SIZE){
+                     System.out.println("\nYour fridge is full!\nYou can't add anymore items until you take some out.");
+                  }
                }
                catch(NoSuchElementException e){
                   System.out.println("\nEnd of file.");
@@ -223,11 +231,12 @@ public class SmartFridge{
    
    public static void exportFridge(String[] items, double[] quantity, String[] units) throws IOException{
       Scanner sc = new Scanner(System.in);
+      
       System.out.println("Please type a filename (no extension) for the exported list:");
       String fileName = sc.next();
       sc.close();
       
-      //creates a recipe folder if one doesn't exist yet
+      //creates a contents folder if one doesn't exist yet
       File dir = new File("contents");
       if(!dir.exists()){
          dir.mkdir();
@@ -434,10 +443,6 @@ public class SmartFridge{
          else{
             System.out.println("\nYou just stored " + newQuantity + " " + newUnit + " of " + newItem);
          }
-      }
-      
-      if(items.length == MAX_SIZE){
-         System.out.println("\nThe fridge is full!\nThe last item that was added was " + newItem);
       }
       
    }
