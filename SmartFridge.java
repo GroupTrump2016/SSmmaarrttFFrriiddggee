@@ -157,9 +157,9 @@ public class SmartFridge{
                System.out.println("Please enter the file name of a .txt file to import from:");
                String fileName = input.next();
                
-               File importFile = new File(fileName + ".txt");
+               File importFile = new File("contents//" + fileName + ".txt");
                
-               //checks if the file exists in the root directory
+               //checks if the file exists in the contents directory
                if(!importFile.exists()){
                   System.out.println("\nThat file does not exist.");
                   break;
@@ -227,9 +227,15 @@ public class SmartFridge{
       String fileName = sc.next();
       sc.close();
       
+      //creates a recipe folder if one doesn't exist yet
+      File dir = new File("contents");
+      if(!dir.exists()){
+         dir.mkdir();
+      }
+      
       //if the file exists with that name, the program will not create a new file
-      File exportFile = new File(fileName + ".txt");
-      if(exportFile.exists()){ 
+      File exportFile = new File("contents//" + fileName + ".txt");
+      if(exportFile.exists()){
          System.out.println("The file " + fileName + ".txt already exists and a new file cannot be created.");
          System.exit(1);
       }

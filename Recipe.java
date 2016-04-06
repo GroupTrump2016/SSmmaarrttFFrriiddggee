@@ -103,6 +103,13 @@ public class Recipe{
       
       pw.close();
       
+      if(exportFile.exists()){
+            System.out.println("\nRecipe created.");
+      }
+      else{
+         System.out.println("\nThere was a problem and the recipe could not be created.");
+      }
+      
    }
    
    //deletes recipes
@@ -121,7 +128,7 @@ public class Recipe{
       
       //checks if the recipe exists
       if(!exportFile.exists()){
-         System.out.println("That recipe does not exist.");
+         System.out.println("\nThat recipe does not exist.");
          return;
       }
       
@@ -130,11 +137,11 @@ public class Recipe{
       
       //checks if successful or not
       if(!exportFile.exists()){
-         System.out.println("Recipe successfully deleted.");
+         System.out.println("\nRecipe successfully deleted.");
          return;
       }
       else{
-         System.out.println("There was a problem and the recipe could not be deleted.");
+         System.out.println("\nThere was a problem and the recipe could not be deleted.");
          return;
       }
       
