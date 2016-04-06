@@ -16,7 +16,7 @@ public class SmartFridge{
       Arrays.fill(items, "");
       Arrays.fill(units, "");
       
-      //the try-catch is testing if there was an argument passed in
+      //checks to see if an argument was passed in
       if(args.length > 0){
          String fileName = args[0];
          System.out.println("Argument detected!");
@@ -53,14 +53,13 @@ public class SmartFridge{
       
       //repeats until the user chooses to exit (when they enter PROGRAM_END)
       while(userOption != PROGRAM_END){
-         //prints the menu of options
          System.out.println("\n=========================================");
          System.out.println("What do you want to do today?");
          
          //prints main menu
          printMenu();
          
-         //gets valid input
+         //gets valid menu input
          //sends in 7 for 7 options
          userOption = InputAndTools.getMenuInput(7);
          
@@ -118,6 +117,14 @@ public class SmartFridge{
                }
             case 4://enter recipe option
                Recipe.enterRecipeMenu(items, quantity, units);
+            
+               //shinks the array because the user might have removed items from the fridge
+               items = ShrinkArray.shrink(quantity, items);
+               units = ShrinkArray.shrink(quantity, units);
+               quantity = ShrinkArray.shrink(quantity);
+               
+               //sorts the array
+               Sort.selectionSort(items, quantity, units);
                break;
             case 5://remove all items
                if(InputAndTools.checkEmpty(quantity)){
@@ -163,11 +170,17 @@ public class SmartFridge{
                //keeps scanning the next line until it reaches the end
                try{
                   while(items.length < MAX_SIZE){
+                     //expands array to make room for a new item
                      items = ExpandArray.expand(items);
                      quantity = ExpandArray.expand(quantity);
                      units = ExpandArray.expand(units);
                      
                      importFile(items, quantity, units, MAX_SIZE, fileSc);
+                     
+                     //cleans up arrays after a new item is inserted
+                     items = ShrinkArray.shrink(quantity, items);
+                     units = ShrinkArray.shrink(quantity, units);
+                     quantity = ShrinkArray.shrink(quantity);
                   }//end while
                }
                catch(NoSuchElementException e){
@@ -201,7 +214,7 @@ public class SmartFridge{
       System.out.println("\n1. Add item to fridge");
       System.out.println("2. Remove item from fridge");
       System.out.println("3. Display all contents of the fridge");
-      System.out.println("4. Enter a recipe");
+      System.out.println("4. Recipe Submenu");
       System.out.println("5. Remove ALL items");
       System.out.println("6. Enter file");
       System.out.println("7. Exit the fridge");
