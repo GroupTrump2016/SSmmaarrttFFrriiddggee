@@ -1,4 +1,5 @@
-import java.util.Scanner;
+import java.util.*;
+import java.io.*;
 
 //contains a collection of tools needed for SmartFridge
 //it's all here to reduce clutter on the main class
@@ -264,4 +265,78 @@ public class InputAndTools{
       
       return -1;
    }//end getNullPosition
+   
+   //checks if there's enough in the fridge for the recipe
+   public static boolean enoughIngredients(String[] items, double[] quantity, String[] units, Scanner fileSc) throws IOException{
+      String newItem = "", newUnit = "";
+      double newQuantity, convertedQuantity;
+      String currentLine = "";
+      boolean enough = true;
+      
+      while(fileSc.hasNextLine()){
+         currentLine = fileSc.nextLine();
+         Scanner line = new Scanner(currentLine);
+         
+         newUnit = "";
+         
+         //retrieves item name, concatenates items with multiple words (eg. orange juice)
+         newItem = line.next();
+         while(!line.hasNextDouble()){
+            newItem += " " + line.next();
+         }
+            
+         //removes the comma from the item string
+         newItem = newItem.substring(0, newItem.length() - 1);
+            
+         newQuantity = line.nextDouble();
+            
+         //checks to see if there are units or nothing (as in 4 tomatoes)
+         try{
+            newUnit = line.next();
+         }
+         catch(NoSuchElementException e){
+            //nothing happens, it just catches the exception
+         }
+         
+         //check if the current item is in the fridge already
+         int itemPos = getItemPos(items, newItem);
+         
+         //checks the unit matches the category of units in the fridge
+         if(itemPos != -1 && !doUnitsMatch(newUnit, units, itemPos)){
+            System.out.println("\nThe item, " + newItem + ", is currently being stored in a different unit.");
+            System.out.println("Please change it before attempting again.");
+         }
+         
+         
+         if(itemPos == -1){
+            if(newUnit.equalsIgnoreCase(""))
+               System.out.println("\nYou are missing " + newQuantity + " " + newItem);
+            else
+               System.out.println("\nYou are missing " + newQuantity + " " + newUnit + " of " + newItem);
+            enough = false;
+         }
+            
+         else{
+            //convert units here
+            convertedQuantity = convertUnits(newQuantity, newUnit, itemPos, units);
+            
+            //checks if the item should be added to the list according to the units (will export full value if units don't match)
+            if(quantity[itemPos] < convertedQuantity && doUnitsMatch(newUnit, units, itemPos)){
+               System.out.println("\nYou are missing " + (convertedQuantity - quantity[itemPos]) + " of " + newItem);
+               enough = false;
+            }
+            
+            else if(!doUnitsMatch(newUnit, units, itemPos)){
+               System.out.println("\nYou are missing " + convertedQuantity + " " + newUnit + " of " + newItem);
+               enough = false;
+            }
+         }
+            
+         
+      
+      }
+      
+      return enough;
+      
+   }
 }

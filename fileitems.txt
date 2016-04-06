@@ -3,7 +3,7 @@ orange juice, 1.4 L
 cheddar cheese, 85 g
 eggs, 9
 salsa, 400 mL
-water, 20.0 ml
-flour, 100.0 g
-water, 80.0 ml
+water, 1 l
+flour, 200 g
+water, 100.0 ml
 baking soda, 75.0 g

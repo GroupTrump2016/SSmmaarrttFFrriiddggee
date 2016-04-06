@@ -1,21 +1,5 @@
-import java.util.Scanner;
-import java.util.Arrays;
-import java.io.File;
-import java.io.IOException;
-import java.util.NoSuchElementException;
-import java.io.PrintWriter;
-
-//requires
-//1. add item
-//2. remove item
-//3. display fridge
-//4. enter recipe
-   //4.1 make recipe
-//5. remove all items
-//6. enter file
-//7. ezit program
-
-//when a file is imported then the array needs to be increased by the amount of items in the file
+import java.util.*;
+import java.io.*;
 
 public class SmartFridge{
 	public static void main(String[] args) throws IOException{

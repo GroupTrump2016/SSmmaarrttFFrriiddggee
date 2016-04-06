@@ -1,9 +1,5 @@
-import java.util.Scanner;
-import java.util.Arrays;
-import java.io.File;
-import java.io.IOException;
-import java.util.NoSuchElementException;
-import java.io.PrintWriter;
+import java.util.*;
+import java.io.*;
 
 public class Recipe{
    
@@ -195,21 +191,25 @@ public class Recipe{
          return;
       }
       
-      Scanner fileSc = new Scanner(importFile);
+      Scanner printFileSc = new Scanner(importFile);
       
       File exportFile = new File("recipes//" + fileName + "_missingitems.txt");
       PrintWriter pw = new PrintWriter(exportFile);
       
-      //keeps scanning the next line until it reaches the end
-      try{
-         importFile(items, quantity, units, fileSc, exportFile, pw, option);
-      }
-      catch(NoSuchElementException e){
-         System.out.println("\nEnd of file.");
+      if(option == 1)
+         importFile(items, quantity, units, printFileSc, exportFile, pw, option);
+      
+      //creates a new scanner so that it can rescan the entire recipe again after checking enoughIngredients
+      else if(option != 1 && InputAndTools.enoughIngredients(items, quantity, units, printFileSc)){
+         Scanner cookFileSc = new Scanner(importFile);
+         importFile(items, quantity, units, cookFileSc, exportFile, pw, option);
+         System.out.println("\nRecipe cooked!");
+         cookFileSc.close();
       }
       
-      fileSc.close();
+      printFileSc.close();
       
+      //will only print this if the user entered from the create a shopping list menu
       if(option == 1){
          if(exportFile.exists()){
             System.out.println("\nShopping list created.");
@@ -263,6 +263,7 @@ public class Recipe{
             }
          }
          
+         //option for shopping list
          if(option == 1){
             //prints to the missingitems file the missing item
             if(itemPos == -1){
@@ -274,40 +275,28 @@ public class Recipe{
                convertedQuantity = InputAndTools.convertUnits(newQuantity, newUnit, itemPos, units);
                
                //checks if the item should be added to the list according to the units (will export full value if units don't match)
-               if(quantity[itemPos] < newQuantity && InputAndTools.doUnitsMatch(newUnit, units, itemPos)){
-                  pw.println(newItem + ", " + (newQuantity - quantity[itemPos]) + " " + newUnit);
+               if(quantity[itemPos] < convertedQuantity&& InputAndTools.doUnitsMatch(newUnit, units, itemPos)){
+                  pw.println(newItem + ", " + (convertedQuantity - quantity[itemPos]) + " " + newUnit);
                }
-               else if(quantity[itemPos] < newQuantity && !InputAndTools.doUnitsMatch(newUnit, units, itemPos)){
-                  pw.println(newItem + ", " + newQuantity + " " + newUnit);
+               else if(quantity[itemPos] < convertedQuantity && !InputAndTools.doUnitsMatch(newUnit, units, itemPos)){
+                  pw.println(newItem + ", " + convertedQuantity + " " + newUnit);
                }
             }
          }
          
          else{
-            if(itemPos == -1){
-               if(newUnit.equalsIgnoreCase(""))
-                  System.out.println("\nYou are missing " + newQuantity + " " + newItem);
-               else
-                  System.out.println("\nYou are missing " + newQuantity + " " + newUnit + " of " + newItem);
-            }
+            //will have already checked to see if there's enough ingredients before getting here
             
-            else{
-               //convert units here
-               convertedQuantity = InputAndTools.convertUnits(newQuantity, newUnit, itemPos, units);
+            //convert units here
+            convertedQuantity = InputAndTools.convertUnits(newQuantity, newUnit, itemPos, units);
+            
+            if(InputAndTools.doUnitsMatch(newUnit, units, itemPos)){
+               quantity[itemPos] -= convertedQuantity;
                
-               if(quantity[itemPos] >= newQuantity && InputAndTools.doUnitsMatch(newUnit, units, itemPos)){
-                  quantity[itemPos] -= newQuantity;
-                  System.out.println("Dispensed " + newQuantity + " of " + newItem);
-               }
-               
-               //checks if the item should be added to the list according to the units (will export full value if units don't match)
-               else if(quantity[itemPos] < newQuantity && InputAndTools.doUnitsMatch(newUnit, units, itemPos)){
-                  System.out.println("\nYou are missing " + (newQuantity - quantity[itemPos]) + " of " + newItem);
-               }
-               
-               else if(!InputAndTools.doUnitsMatch(newUnit, units, itemPos)){
-                  System.out.println("\nYou are missing " + newQuantity + " " + newUnit + " of " + newItem);
-               }
+               if(newUnit.equalsIgnoreCase(""))
+                  System.out.println("Dispensed " + (int) newQuantity + " " + newItem);
+               else
+                  System.out.println("Dispensed " + newQuantity + " " + newUnit + " of " + newItem);
             }
             
          }
