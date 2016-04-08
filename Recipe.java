@@ -208,6 +208,9 @@ public class Recipe{
       
       File importFile = new File("recipes//" + fileName + ".txt");
       
+      //creates a dummyFile so that importFile can be called when cooking
+      File dummyFile = new File("temp.txt");
+      
       //checks if the file exists in the root directory
       if(!importFile.exists()){
          System.out.println("\nThat file does not exist.");
@@ -216,24 +219,13 @@ public class Recipe{
       
       Scanner printFileSc = new Scanner(importFile);
       
-      File exportFile = new File("recipes//" + fileName + "_missingitems.txt");
-      PrintWriter pw = new PrintWriter(exportFile);
-      
-      if(option == 1)
-         importFile(items, quantity, units, printFileSc, exportFile, pw, option);
-      
-      //creates a new scanner so that it can rescan the entire recipe again after checking enoughIngredients
-      else if(option != 1 && InputAndTools.enoughIngredients(items, quantity, units, printFileSc)){
-         Scanner cookFileSc = new Scanner(importFile);
-         importFile(items, quantity, units, cookFileSc, exportFile, pw, option);
-         System.out.println("\nRecipe cooked!");
-         cookFileSc.close();
-      }
-      
-      printFileSc.close();
-      
-      //will only print this if the user entered from the create a shopping list menu
+      //if shopping list
       if(option == 1){
+         File exportFile = new File("recipes//" + fileName + "_missingitems.txt");
+         PrintWriter pw = new PrintWriter(exportFile);
+         
+         importFile(items, quantity, units, printFileSc, pw, option);
+         
          if(exportFile.exists()){
             System.out.println("\nShopping list created.");
          }
@@ -242,10 +234,28 @@ public class Recipe{
          }
       }
       
+      //creates a new scanner so that it can rescan the entire recipe again after checking enoughIngredients
+      else if(option != 1 && InputAndTools.enoughIngredients(items, quantity, units, printFileSc)){
+         Scanner cookFileSc = new Scanner(importFile);
+         
+         //creates a dummy printwriter so that importFile can be called
+         PrintWriter dummyPW = new PrintWriter(dummyFile);
+         
+         importFile(items, quantity, units, cookFileSc, dummyPW, option);
+         
+         System.out.println("\nRecipe cooked!");
+         cookFileSc.close();
+      }
+      
+      //delete the dummyFile
+      dummyFile.delete();
+      
+      printFileSc.close();
+      
    }
    
    
-   public static void importFile(String[] items, double[] quantity, String[] units, Scanner fileSc, File exportFile, PrintWriter pw, int option) throws IOException{
+   public static void importFile(String[] items, double[] quantity, String[] units, Scanner fileSc, PrintWriter pw, int option) throws IOException{
       String newItem = "", newUnit = "";
       double newQuantity, convertedQuantity;
       String currentLine = "";

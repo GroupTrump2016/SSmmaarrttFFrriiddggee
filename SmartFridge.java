@@ -41,7 +41,6 @@ public class SmartFridge{
          }
          else{
             Scanner fileSc = new Scanner(importFile);
-            
             //keeps scanning the next line until it reaches the end
             try{
                while(items.length < MAX_SIZE){
