@@ -300,6 +300,7 @@ public class SmartFridge{
       System.out.println("And how much of it will we be storing?");
       double newQuantity = InputAndTools.getValidQuantity();
       
+      //if item can't be found then the arrays will expand by 1 and store the item
       if(itemPos == -1){
          items[InputAndTools.getNullPosition(quantity)] = newItem;
          units[InputAndTools.getNullPosition(quantity)] = userUnit;
@@ -459,7 +460,7 @@ public class SmartFridge{
       
    }
    
-   //WIP - make prettier
+   //prints fridge
    public static void printFridge(String[] items, double[] quantity, String[] units){
       System.out.println("Fridge contents:\n");
       for(int i = 0; i < items.length; i++){
