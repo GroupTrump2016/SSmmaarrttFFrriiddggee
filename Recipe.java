@@ -73,7 +73,7 @@ public class Recipe{
    public static void addRecipe() throws IOException{
       Scanner sc = new Scanner(System.in);
       
-      System.out.println("Please type a filename (no extension) for the recipe:");
+      System.out.println("Please type a filename (no extension) for the recipe (case-sensitive):");
       String fileName = sc.next();
       boolean doneEntering = false;
       
@@ -132,7 +132,7 @@ public class Recipe{
    public static void deleteRecipe(){
       Scanner sc = new Scanner(System.in);
       
-      System.out.println("Please type a filename (no extension) for the recipe you want to delete:");
+      System.out.println("Please type a filename (no extension) for the recipe you want to delete (case-sensitive):");
       String fileName = sc.next();
       
       System.out.println("Are you sure you want to delete " + fileName + ".txt?");
@@ -167,7 +167,7 @@ public class Recipe{
    public static void printRecipe() throws IOException{
       Scanner sc = new Scanner(System.in);
       
-      System.out.println("Please enter the file name of a recipe you want to print:");
+      System.out.println("Please enter the file name of a recipe you want to print (case-sensitive):");
       String fileName = sc.next();
       
       File importFile = new File("recipes//" + fileName + ".txt");
@@ -199,10 +199,10 @@ public class Recipe{
       Scanner sc = new Scanner(System.in);
       
       if(option == 1){
-         System.out.println("Please enter the file name of a recipe you want to check from:");
+         System.out.println("Please enter the file name of a recipe you want to check from (case-sensitive):");
       }
       else{
-         System.out.println("Please enter the file name of a recipe you want to make:");
+         System.out.println("Please enter the file name of a recipe you want to make (case-sensitive):");
       }
       String fileName = sc.next();
       
