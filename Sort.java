@@ -1,3 +1,15 @@
+/* Program name: Sort
+ * Name and ID: Marty Yung 100256573, Youta Wu 100259493
+ * Date: April 8, 2016
+ * Lab: Project
+ * Course: CPSC 1150 - Sec. 5
+ */
+ 
+ /*	This program uses selection sort to sort the arrays in alphabetical order according to the name of the items.
+      
+      This is used after adding items or removing items from the SmartFridge.
+ */
+
 public class Sort{
    public static void selectionSort(String[] items, double[] quantity, String[] units){
       //loops for entire length of array

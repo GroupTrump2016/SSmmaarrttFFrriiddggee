@@ -1,9 +1,22 @@
+/* Program name: Recipe
+ * Name and ID: Marty Yung 100256573, Youta Wu 100259493
+ * Date: April 8, 2016
+ * Lab: Project
+ * Course: CPSC 1150 - Sec. 5
+ */
+ 
+ /*	This program is a sub-program of the SmartFridge program that handles the options for recipes.
+ 
+      This is in another class to reduce clutter in the main program (SmartFridge.java).
+ */
+
 import java.util.*;
 import java.io.*;
 
 public class Recipe{
    
    public static void enterRecipeMenu(String[] items, double[] quantity, String[] units) throws IOException{
+      //sets default values
       int userOption = -1;
       final int RETURN_TO_MAIN = 6;
       
@@ -31,9 +44,11 @@ public class Recipe{
                printRecipe();
                break;
             case 4:
+               //sends in 1 to get the shopping list
                getMissingItems(items, quantity, units, 1);
                break;
             case 5:
+               //sends in 2 to cook the recipe
                getMissingItems(items, quantity,units, 2);
                break;
          }//end switchcase
@@ -57,6 +72,7 @@ public class Recipe{
    //add a recipe
    public static void addRecipe() throws IOException{
       Scanner sc = new Scanner(System.in);
+      
       System.out.println("Please type a filename (no extension) for the recipe:");
       String fileName = sc.next();
       boolean doneEntering = false;

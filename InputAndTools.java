@@ -1,3 +1,16 @@
+/* Program name: InputAndTools
+ * Name and ID: Marty Yung 100256573, Youta Wu 100259493
+ * Date: April 8, 2016
+ * Lab: Project
+ * Course: CPSC 1150 - Sec. 5
+ */
+ 
+ /*	This program contains a collection of methods that are called from SmartFridge. It contains methods for getting
+      valid input from the user, getting item positions in the fridge, and various boolean checks.
+      
+      These are here to reduce clutter in the main program (SmartFridge.java).
+ */
+
 import java.util.*;
 import java.io.*;
 

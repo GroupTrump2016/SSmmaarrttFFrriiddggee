@@ -1,3 +1,14 @@
+/* Program name: SmartFridge
+ * Name and ID: Marty Yung 100256573, Youta Wu 100259493
+ * Date: April 8, 2016
+ * Lab: Project
+ * Course: CPSC 1150 - Sec. 5
+ */
+ 
+ /*	This program creates a fridge that can store items, the quantities, and the units of the quantities. The SmartFridge
+      is capable of adding/removing items, creating and cooking recipes, and saving the contents for consistent use. 
+ */
+
 import java.util.*;
 import java.io.*;
 

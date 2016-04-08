@@ -1,3 +1,15 @@
+/* Program name: ShrinkArray
+ * Name and ID: Marty Yung 100256573, Youta Wu 100259493
+ * Date: April 8, 2016
+ * Lab: Project
+ * Course: CPSC 1150 - Sec. 5
+ */
+ 
+ /*	This program clears out items that have no quantity left in the SmartFridge and shrinks the arrays accordingly.
+      It also contains methods for completely clearing out the arrays and leaving it with the default value set in
+      the main program (SmartFridge.java).
+ */
+
 import java.util.Arrays;
 
 //finds the length the new array should be

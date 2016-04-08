@@ -1,3 +1,16 @@
+/* Program name: ExpandArray
+ * Name and ID: Marty Yung 100256573, Youta Wu 100259493
+ * Date: April 8, 2016
+ * Lab: Project
+ * Course: CPSC 1150 - Sec. 5
+ */
+ 
+ /*	This program is capable of expanding an array by one size and copying the old contents into the new one. 
+      SmartFridge uses this when new items are added.
+      
+      This program uses method overloading.
+ */
+
 import java.util.Arrays;
 
 //copies each respective array into an array that is one bigger to make room for another item
@@ -15,6 +28,7 @@ public class ExpandArray{
       return newStringArr;
    }
    
+   //this method is for the quantity
    public static double[] expand(double[] quantity){
       double[] newQuantity = new double[quantity.length + 1];
       
