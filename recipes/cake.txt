@@ -1,0 +1,3 @@
+water, 50.0 ml
+flour, 80.0 g
+eggs, 2

@@ -7,6 +7,8 @@
  
  /*	This program creates a fridge that can store items, the quantities, and the units of the quantities. The SmartFridge
       is capable of adding/removing items, creating and cooking recipes, and saving the contents for consistent use. 
+      
+      Arguments passed in must be in the /contents/ folder.
  */
 
 import java.util.*;
@@ -31,9 +33,9 @@ public class SmartFridge{
       if(args.length > 0){
          String fileName = args[0];
          System.out.println("Argument detected!");
-         File importFile = new File(fileName + ".txt");
+         File importFile = new File("contents//" + fileName + ".txt");
          
-         //checks if the argument exists in the root directory
+         //checks if the argument exists in the /contents/ directory
          if(!importFile.exists()){
             System.out.println("\nThe file that was attempted to be passed in does not exist.");
          }
