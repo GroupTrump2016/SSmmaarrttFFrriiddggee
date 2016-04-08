@@ -5,5 +5,4 @@ eggs, 9
 salsa, 400 mL
 water, 1 l
 flour, 100 g
-water, 80.0 ml
 baking soda, 75.0 g
