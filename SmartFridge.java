@@ -170,7 +170,7 @@ public class SmartFridge{
                //all those new method calls is LESS friendly on resources
                Scanner input = new Scanner(System.in);
                
-               System.out.println("Please enter the file name of a .txt file to import from:");
+               System.out.println("Please enter the file name of a .txt file to import from (case-sensitive):");
                String fileName = input.next();
                
                File importFile = new File("contents//" + fileName + ".txt");
